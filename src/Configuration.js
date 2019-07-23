@@ -1,6 +1,5 @@
-import React, { Component }  from 'react';
+import React  from 'react';
 import Modal from 'react-modal';
-import {render} from 'react-dom';
 import Form from "react-jsonschema-form";
 import SlidingPane  from 'react-sliding-pane';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
@@ -147,7 +146,7 @@ export default class Configuration extends React.Component {
                         extensions={['json']}
                         onChange={me.readTextFile}
                         onError={errMsg => ( console.log(errMsg) )}>  
-                        <img src={ImportImg} height="30" width="30"></img>
+                        <img src={ImportImg} alt="import" height="30" width="30"></img>
                     </FilePicker>
                     </div>
                     <div className="col-md-10">
