@@ -5,3 +5,7 @@
 .text-full-width {
     min-width: 100%;
 }
+
+.settings-top-pad {
+    padding-top: 20px
+}

@@ -1,3 +1,38 @@
 {
-    "name": "kurt"
+    "name": "Poker Tournament",
+    "initial_player_count": 9,
+    "blind_levels": 40,
+    "blind_time": 15,
+    "break_time": 5,
+    "levels_between_break": 3,
+    "buyin": 10,
+    "rebuy": 10,
+    "addon": 0,
+    "blinds": [
+        {
+            "small_blind": 25,
+            "big_blind": 50,
+            "ante": 0
+        },
+        {
+            "small_blind": 50,
+            "big_blind": 100,
+            "ante": 0
+        },
+        {
+            "small_blind": 100,
+            "big_blind": 200,
+            "ante": 0
+        },
+        {
+            "small_blind": 200,
+            "big_blind": 300,
+            "ante": 0
+        },
+        {
+            "small_blind": 300,
+            "big_blind": 600,
+            "ante": 0
+        }
+    ]
 }
