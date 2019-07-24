@@ -1,6 +1,7 @@
 import React from 'react';
 import Reflux from 'reflux';
 import TimerStore from './TimerStore';
+import moment from 'moment';
 
 export default class ElapsedTimer extends Reflux.Component {
 
@@ -8,8 +9,9 @@ export default class ElapsedTimer extends Reflux.Component {
         super(props);
 
         this.state = {
+            start_time: moment(),
             current_hours: 0,
-            current_minutes:0,
+            current_minutes: 0,
             current_seconds: 0,
             timerStarted: false
         }
@@ -25,41 +27,25 @@ export default class ElapsedTimer extends Reflux.Component {
     }
 
     tick() {
-        var new_hours = 0;
-        var new_minutes = 0;
-        var new_seconds = 0;
-        const {current_hours, current_seconds, current_minutes, timerStarted} = this.state;
-        
-        if(!timerStarted) {
-            return;
-        }
+        var dateNow = moment();
+        var dateStarted = this.state.start_time;
+        var diff = dateNow.diff(dateStarted, 'seconds');
 
-        if(current_seconds >= 60) {
-            new_minutes = current_minutes + 1;
-            new_seconds = 0;
-            new_hours = current_hours;
-        } else {
-            new_seconds = current_seconds + 1;
-            new_minutes = current_minutes;
-            new_hours = current_hours;
-        }
-
-        if(current_minutes >= 60) {
-            new_hours = current_hours + 1;
-            new_minutes = 0
-            new_seconds = current_seconds;
-        }
-
+        var minutes = Math.floor(diff / 60);
+        var hours = Math.floor(minutes / 60);
+        minutes = minutes % 60
+        var seconds = diff % 60;
         this.setState({
-            current_hours: new_hours,
-            current_minutes: new_minutes,
-            current_seconds: new_seconds
+            start_time: this.state.start_time,
+            current_hours: hours,
+            current_minutes: minutes,
+            current_seconds: seconds
         });
-        
     }
 
     onStart() {
-        this.internal_clock = setInterval(this.tick, 1000);
+        this.start_time = moment();
+        this.internal_clock = setInterval(this.tick, 500);
     }
 
     render() {
