@@ -1,5 +1,6 @@
 import React from 'react';
 import TimerActions from './TimerActions';
+import moment from 'moment';
 
 export default class Timer extends React.Component {
 
@@ -7,7 +8,8 @@ export default class Timer extends React.Component {
         super(props);
 
         this.state = {
-            original_minutes: 15,
+            end_time: moment(),
+            blind_time: 15,
             current_minutes: 15,
             current_seconds: 0
         }
@@ -19,25 +21,17 @@ export default class Timer extends React.Component {
     }
 
     tick() {
-        var new_minutes = 0;
-        var new_seconds = 0;
-        if(this.state.current_seconds <= 0) {
-            new_minutes = this.state.current_minutes - 1;
-            new_seconds = 59;
-        } else {
-            new_seconds = this.state.current_seconds - 1;
-            new_minutes = this.state.current_minutes;
-        }
-
-        if(new_minutes <= 0 && new_seconds <= 0) {
-            this.onComplete();
-        } else {
-            this.setState({
-                original_minutes: this.state.original_minutes,
-                current_minutes: new_minutes,
-                current_seconds: new_seconds
-            });
-        }
+        var dateNow = moment();
+        var dateExpected = this.state.end_time;
+        var diff = dateExpected.diff(dateNow, 'seconds');
+        var minutes = Math.floor(diff / 60);
+        var seconds = diff % 60;
+        this.setState({
+            end_time: this.state.end_time,
+            blind_time: this.state.blind_time,
+            current_minutes: minutes,
+            current_seconds: seconds
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -45,11 +39,11 @@ export default class Timer extends React.Component {
         if(nextProps.state.blind_time !== undefined && this.state.original_minutes !== nextProps.state.blind_time){
             this.onPause();
             this.setState({
-                original_minutes: nextProps.state.blind_time,
+                blind_time: nextProps.state.blind_time,
                 current_minutes: nextProps.state.blind_time,
-                current_seconds: 0
+                current_seconds: 0,
+                end_time: undefined
             });
-            this.onStart = nextProps.onStart;
         }
     }
 
@@ -58,7 +52,8 @@ export default class Timer extends React.Component {
     }
 
     start() {
-        this.internal_clock = setInterval(this.tick, 1000);
+        this.state.end_time = moment().add(this.state.blind_time,'m');
+        this.internal_clock = setInterval(this.tick, 500);
         TimerActions.start();
     }
 
