@@ -1,4 +1,5 @@
 import React from 'react';
+import TimerActions from './TimerActions';
 
 export default class Timer extends React.Component {
 
@@ -10,8 +11,9 @@ export default class Timer extends React.Component {
             current_minutes: 15,
             current_seconds: 0
         }
+        
         this.onComplete = props.onComplete;
-        this.onStart = this.onStart.bind(this);
+        this.start = this.start.bind(this);
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
     }
@@ -47,6 +49,7 @@ export default class Timer extends React.Component {
                 current_minutes: nextProps.state.blind_time,
                 current_seconds: 0
             });
+            this.onStart = nextProps.onStart;
         }
     }
 
@@ -54,8 +57,9 @@ export default class Timer extends React.Component {
         clearInterval(this.internal_clock);
     }
 
-    onStart() {
+    start() {
         this.internal_clock = setInterval(this.tick, 1000);
+        TimerActions.start();
     }
 
     render() {
@@ -65,7 +69,7 @@ export default class Timer extends React.Component {
                     {this.state.current_minutes}:{this.state.current_seconds < 10  && '0' + this.state.current_seconds } {this.state.current_seconds >= 10  && this.state.current_seconds}
                 </div>
                 <div className="col-md-12">
-                    <button onClick={this.onStart}>Start</button>
+                    <button onClick={this.start}>Start</button>
                 </div>
             </div>
         )

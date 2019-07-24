@@ -4,8 +4,10 @@ import Form from "react-jsonschema-form";
 import SlidingPane  from 'react-sliding-pane';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 import ConfigurationActions from './ConfigurationActions';
-import ImportImg from './images/import.png'
-import { FilePicker } from 'react-file-picker'
+import ImportImg from './images/import.png';
+import SaveImg from './images/save.svg';
+import { FilePicker } from 'react-file-picker';
+import { save } from 'save-file';
 
 export default class Configuration extends React.Component {
 
@@ -21,6 +23,7 @@ export default class Configuration extends React.Component {
         this.updateJson = this.updateJson.bind(this);
         this.readTextFile = this.readTextFile.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.onSaveFile = this.onSaveFile.bind(this);
 
         this.schema = {
             title: "Configuration Settings",
@@ -124,6 +127,10 @@ export default class Configuration extends React.Component {
         this.updateJsonObject(response.formData);
     }
 
+    async onSaveFile() {
+        await save(this.state.config, this.state.configObject.name.replace(" ", "_") + '.json');
+    }
+
     render() {
         var me = this;
         return (
@@ -149,10 +156,13 @@ export default class Configuration extends React.Component {
                         <img src={ImportImg} alt="import" height="30" width="30"></img>
                     </FilePicker>
                     </div>
-                    <div className="col-md-10">
+                    <div className="col-md-8">
                         <form>
                             <textarea className="form-control text-full-width" value={me.state.config} onChange={me.updateJson} />
                         </form>
+                    </div>
+                    <div className="col-md-2">
+                        <img src={SaveImg} alt="import" height="30" width="30" onClick={me.onSaveFile}></img>
                     </div>
                 </div>
             </div>
