@@ -65,8 +65,8 @@ export default class Timer extends React.Component {
     render() {
         return (
             <div className="row">
-                <div className="col-md-12">
-                    {this.state.current_minutes}:{this.state.current_seconds < 10  && '0' + this.state.current_seconds } {this.state.current_seconds >= 10  && this.state.current_seconds}
+                <div className="col-md-12 display-1 text-large">
+                    {this.state.current_minutes}:{this.state.current_seconds < 10  && '0' + this.state.current_seconds }{this.state.current_seconds >= 10  && this.state.current_seconds}
                 </div>
                 <div className="col-md-12">
                     <button onClick={this.start}>Start</button>
