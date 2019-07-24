@@ -24,6 +24,12 @@ export default class Timer extends React.Component {
         var dateNow = moment();
         var dateExpected = this.state.end_time;
         var diff = dateExpected.diff(dateNow, 'seconds');
+
+        if(diff <= 0) {
+            this.onPause();
+            this.onComplete();
+        }
+
         var minutes = Math.floor(diff / 60);
         var seconds = diff % 60;
         this.setState({

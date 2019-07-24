@@ -1,6 +1,5 @@
 import React from 'react';
 import Reflux from 'reflux';
-import TimerStore from './TimerStore';
 import moment from 'moment';
 
 export default class ElapsedTimer extends Reflux.Component {
@@ -18,12 +17,20 @@ export default class ElapsedTimer extends Reflux.Component {
 
         this.onComplete = props.onComplete;
         this.onStart = this.onStart.bind(this);
+        this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
-        this.store = TimerStore;
     }
 
-    componentDidMount() {
-        this.onStart();
+    componentWillReceiveProps(nextProps) {
+        // You don't have to do this check first, but it can help prevent an unneeded render
+        if(nextProps.start !== undefined && this.state.start !== nextProps.start){
+
+            if(nextProps.start) {
+                this.onStart();
+            } else {
+                this.onPause();
+            }
+        }
     }
 
     tick() {
@@ -33,7 +40,7 @@ export default class ElapsedTimer extends Reflux.Component {
 
         var minutes = Math.floor(diff / 60);
         var hours = Math.floor(minutes / 60);
-        minutes = minutes % 60
+        minutes = minutes % 60;
         var seconds = diff % 60;
         this.setState({
             start_time: this.state.start_time,
@@ -46,6 +53,10 @@ export default class ElapsedTimer extends Reflux.Component {
     onStart() {
         this.start_time = moment();
         this.internal_clock = setInterval(this.tick, 500);
+    }
+
+    onPause() {
+        clearInterval(this.internal_clock);
     }
 
     render() {

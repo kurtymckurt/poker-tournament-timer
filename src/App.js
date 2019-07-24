@@ -5,9 +5,11 @@ import ControlImg from './images/control.svg';
 import Configuration  from './Configuration';
 import Control from './Control';
 import ConfigurationStore from './ConfigurationStore';
+import TimerStore from './TimerStore';
 import Timer from './Timer';
 import ElapsedTimer from './ElapsedTimer';
 import CurrentTime from './CurrentTime';
+import update from 'react-addons-update';
 import './App.css';
 
 
@@ -32,10 +34,10 @@ class App extends Reflux.Component {
       blinds: [{"small_blind":25,"big_blind":50,"ante":10},{"small_blind":50,"big_blind":100,"ante":0},{"small_blind":100,"big_blind":200,"ante":0},{"small_blind":200,"big_blind":300,"ante":0},{"small_blind":300,"big_blind":600,"ante":0}]
     }
 
-    this._elaspedTimer = React.createRef();
     this.settingsClick = this.settingsClick.bind(this);
     this.controlClick = this.controlClick.bind(this);
-    this.store = ConfigurationStore;
+    this.onNextBlind = this.onNextBlind.bind(this);
+    this.stores = [ConfigurationStore, TimerStore];
   }
 
   settingsClick() {
@@ -52,6 +54,10 @@ class App extends Reflux.Component {
 
   onNextBlind() {
     console.log("next blind");
+    const nextBlindLevel = this.state.current_blind_level + 1
+    this.setState(
+      update(this.state, { current_blind_level : { $set: nextBlindLevel }})
+    );
   }
 
   render() {
@@ -86,14 +92,14 @@ class App extends Reflux.Component {
           <div className="row text-center">
             <div className="col-md-2">Round <br/>{current_blind_level + 1}</div>
             <div className="col-md-8 h1">
-              <Timer state={me.state} onComplete={me.onNextBlind} />
+              <Timer start={me.state.timerStarted} state={me.state} onComplete={me.onNextBlind} />
             </div>
             <div className="col-md-2"><CurrentTime></CurrentTime></div>
           </div>
           <div className="row text-center">
             <div className="col-md-2">Entries <br/> {entry_player_count}</div>
             <div className="col-md-8"></div>
-            <div className="col-md-2">Elapsed Time <br/> <ElapsedTimer/></div>
+            <div className="col-md-2">Elapsed Time <br/> <ElapsedTimer start={me.state.timerStarted} /></div>
           </div>
           <div className="row text-center">
             <div className="col-md-2">Players In <br/>{current_player_count}</div>

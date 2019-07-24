@@ -79,7 +79,7 @@ export default class Configuration extends React.Component {
     }
 
     closePane() {
-        this.setState({ isPaneOpen: false });
+        this.setState({ isPaneOpen: false});
     }
 
     updateJson(event) {
