@@ -1,5 +1,4 @@
 import React from 'react';
-import TimerActions from './TimerActions';
 import moment from 'moment';
 
 export default class Timer extends React.Component {
@@ -11,7 +10,8 @@ export default class Timer extends React.Component {
             end_time: moment(),
             blind_time: 15,
             current_minutes: 15,
-            current_seconds: 0
+            current_seconds: 0,
+            start: false
         }
         
         this.onComplete = props.onComplete;
@@ -21,6 +21,10 @@ export default class Timer extends React.Component {
     }
 
     tick() {
+
+        if(!this.state.start) {
+            return null;
+        }
         var dateNow = moment();
         var dateExpected = this.state.end_time;
         var diff = dateExpected.diff(dateNow, 'seconds');
@@ -40,17 +44,25 @@ export default class Timer extends React.Component {
         });
     }
 
+    componentDidMount() {
+    
+    }
+
     componentWillReceiveProps(nextProps) {
         // You don't have to do this check first, but it can help prevent an unneeded render
-        if(nextProps.state.blind_time !== undefined && this.state.original_minutes !== nextProps.state.blind_time){
-            this.onPause();
+        if(nextProps.blind_time !== undefined && this.state.original_minutes !== nextProps.blind_time){
             this.setState({
-                blind_time: nextProps.state.blind_time,
-                current_minutes: nextProps.state.blind_time,
-                current_seconds: 0,
-                end_time: undefined
+                blind_time: nextProps.blind_time,
             });
         }
+        if(nextProps.start !== this.state.start) {
+            this.setState({
+                end_time: moment().add(this.state.blind_time, 'm'),
+                start: nextProps.start
+            })
+            this.internal_clock = setInterval(this.tick, 500);
+        }
+
     }
 
     onPause() {
@@ -58,20 +70,19 @@ export default class Timer extends React.Component {
     }
 
     start() {
-        this.state.end_time = moment().add(this.state.blind_time,'m');
+        this.setState({
+            end_time: moment().add(this.state.blind_time,'m')
+        });
         this.internal_clock = setInterval(this.tick, 500);
-        TimerActions.start();
     }
 
     render() {
         return (
             <div className="row">
-                <div className="col-md-12 display-1 text-large">
+                <div className="col-md-12 display-1 text-clock">
                     {this.state.current_minutes}:{this.state.current_seconds < 10  && '0' + this.state.current_seconds }{this.state.current_seconds >= 10  && this.state.current_seconds}
                 </div>
-                <div className="col-md-12">
-                    <button onClick={this.start}>Start</button>
-                </div>
+               
             </div>
         )
     }

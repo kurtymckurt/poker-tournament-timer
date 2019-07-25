@@ -16,7 +16,8 @@ export default class Configuration extends React.Component {
         this.state = {
             isPaneOpen: false,
             config: "",
-            configObject: {}
+            configObject: {},
+            closeWindowHandler: undefined
         }
         this.closePane = this.closePane.bind(this);
         this.updateConfiguration = this.updateConfiguration.bind(this);
@@ -71,14 +72,16 @@ export default class Configuration extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // You don't have to do this check first, but it can help prevent an unneeded render
-        if(nextProps.isOpen !== this.state.isPaneOpen) {
+        if(nextProps.isPaneOpen !== this.state.isPaneOpen) {
             this.setState({
+                closeWindowHandler: nextProps.handler,
                 isPaneOpen: nextProps.isPaneOpen
             })
         }
     }
 
     closePane() {
+        this.state.closeWindowHandler();
         this.setState({ isPaneOpen: false});
     }
 

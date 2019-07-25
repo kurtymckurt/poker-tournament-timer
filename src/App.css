@@ -11,6 +11,31 @@
     filter: grayscale(100%);
 }
 
-.text-large {
-    font-size: 150%;
-  }
+.text-clock {
+    font-size: 200px;
+}
+
+.text-next-blind {
+    font-size: 50px;
+}
+
+div.row {
+    border-style: solid;
+    border-width: 1px;
+    font-size: 20px;
+}
+
+div.col-md-12 {
+    border-style: solid;
+    border-width: 1px;
+}
+
+div.col-md-8 {
+    border-style: solid;
+    border-width: 1px;
+}
+
+div.col-md-2 {
+    border-style: solid;
+    border-width: 1px;
+}

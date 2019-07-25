@@ -37,6 +37,8 @@ class App extends Reflux.Component {
     this.settingsClick = this.settingsClick.bind(this);
     this.controlClick = this.controlClick.bind(this);
     this.onNextBlind = this.onNextBlind.bind(this);
+    this.controlClose = this.controlClose.bind(this);
+    this.settingsClose = this.settingsClose.bind(this);
     this.stores = [ConfigurationStore, TimerStore];
   }
 
@@ -46,9 +48,21 @@ class App extends Reflux.Component {
     })
   }
 
+  settingsClose() {
+    this.setState({
+      isConfigOpen: false
+    })
+  }
+
   controlClick() {
     this.setState({
       isControlOpen: true
+    })
+  }
+
+  controlClose() {
+    this.setState({
+      isControlOpen: false
     })
   }
 
@@ -80,51 +94,51 @@ class App extends Reflux.Component {
             {me.state.name}
             </div>
           </div>
-          <Configuration isPaneOpen={me.state.isConfigOpen}/>
-          <Control isPaneOpen={me.state.isControlOpen} />
+          <Configuration handler={me.settingsClose} isPaneOpen={me.state.isConfigOpen}/>
+          <Control handler={me.controlClose} isPaneOpen={me.state.isControlOpen} />
           <div className="row  bg-dark text-light">
             <div className="col-md-12 h4 text-center">
-              <img className="settings-fill-grayscale" height="30" width="30" alt="Control" src={ControlImg} onClick={me.controlClick}></img>
+              <img className="settings-fill-grayscale" height="30" width="30" title="Action options" alt="Control" src={ControlImg} onClick={me.controlClick}></img>
               ${buyin} Buy-in, {rebuy > 0 && '$' + rebuy + ' to rebuy (Through Round ' + rebuys_through_level + ' Max ' + max_rebuys + ' per player)'}{rebuy === 0 && 'No Rebuys'}, {addon > 0 && '$' + addon + ' to add-on'}{addon === 0 && 'No add-ons'}
-              <img className="settings-fill-grayscale" height="30" width="30" alt="Settings" src={Settings} onClick={me.settingsClick}></img>
+              <img className="settings-fill-grayscale" height="30" width="30" title="Configuration options" alt="Settings" src={Settings} onClick={me.settingsClick}></img>
             </div>
           </div>
           <div className="row text-center">
-            <div className="col-md-2">Round <br/>{current_blind_level + 1}</div>
-            <div className="col-md-8 h1">
-              <Timer start={me.state.timerStarted} state={me.state} onComplete={me.onNextBlind} />
+            <div className="col-md-2 align-self-center">Round <br/>{current_blind_level + 1}</div>
+            <div className="col-md-8 h1 align-self-center">
+              <Timer start={me.state.timerStarted} blind_time={me.state.blind_time} onComplete={me.onNextBlind} />
             </div>
-            <div className="col-md-2"><CurrentTime></CurrentTime></div>
+            <div className="col-md-2 align-self-center"><CurrentTime></CurrentTime></div>
           </div>
           <div className="row text-center">
-            <div className="col-md-2">Entries <br/> {entry_player_count}</div>
+            <div className="col-md-2 align-self-center">Entries <br/> {entry_player_count}</div>
             <div className="col-md-8"></div>
-            <div className="col-md-2">Elapsed Time <br/> <ElapsedTimer start={me.state.timerStarted} /></div>
+            <div className="col-md-2 align-self-center">Elapsed Time <br/> <ElapsedTimer start={me.state.timerStarted} /></div>
           </div>
           <div className="row text-center">
-            <div className="col-md-2">Players In <br/>{current_player_count}</div>
+            <div className="col-md-2 align-self-center">Players In <br/>{current_player_count}</div>
             <div className="col-md-8"></div>
-            <div className="col-md-2">Next Break <br/></div>
+            <div className="col-md-2 align-self-center">Next Break <br/></div>
           </div>
           <div className="row text-center">
-            <div className="col-md-2">Rebuys <br/>{rebuy_count}</div>
-            <div className="col-md-8 h3">Blinds <br/> {current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
+            <div className="col-md-2 align-self-center">Rebuys <br/>{rebuy_count}</div>
+            <div className="col-md-8 text-next-blind">{current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
             {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}            
             </div>
             <div className="col-md-2"></div>
           </div>
           <div className="row text-center">
-            <div className="col-md-2">Chip Count <br/>${chip_count}</div>
+            <div className="col-md-2 align-self-center">Chip Count <br/>${chip_count}</div>
             <div className="col-md-8"></div>
             <div className="col-md-2"></div>
           </div>
           <div className="row text-center">
-            <div className="col-md-2">Avg Stack <br/>${avg_chip_count}</div>
-            <div className="col-md-8">Next Round: <br/> Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
+            <div className="col-md-2 align-self-center">Avg Stack <br/>${avg_chip_count}</div>
+            <div className="col-md-8 align-self-center">Next Round: <br/> Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
             <div className="col-md-2"></div>
           </div>
           <div className="row text-center">
-            <div className="col-md-2">Total Pot <br/>${total_pot}</div>
+            <div className="col-md-2 align-self-center">Total Pot <br/>${total_pot}</div>
             <div className="col-md-8"></div>
             <div className="col-md-2"></div>
           </div>

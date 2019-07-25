@@ -51,7 +51,9 @@ export default class ElapsedTimer extends Reflux.Component {
     }
 
     onStart() {
-        this.start_time = moment();
+        this.setState({
+            start_time: moment()
+        });
         this.internal_clock = setInterval(this.tick, 500);
     }
 
