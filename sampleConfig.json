@@ -23,6 +23,12 @@
             "ante": 0
         },
         {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
             "small_blind": 100,
             "big_blind": 200,
             "ante": 0

@@ -15,6 +15,7 @@
     "react-moment": "^0.9.2",
     "react-scripts": "3.0.1",
     "react-sliding-pane": "^3.1.0",
+    "react-sound": "^1.2.0",
     "reflux": "^6.4.1",
     "resolve-url-loader": "^3.1.0",
     "save-file": "^2.3.1"

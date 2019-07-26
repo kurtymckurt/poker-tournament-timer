@@ -4,8 +4,8 @@ import Form from "react-jsonschema-form";
 import SlidingPane  from 'react-sliding-pane';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 import ConfigurationActions from './ConfigurationActions';
-import ImportImg from './images/import.png';
-import SaveImg from './images/save.svg';
+import ImportImg from '../images/import.png';
+import SaveImg from '../images/save.svg';
 import { FilePicker } from 'react-file-picker';
 import { save } from 'save-file';
 
@@ -32,12 +32,11 @@ export default class Configuration extends React.Component {
             required: ["name", "blind_levels"],
             properties: {
               name: {type: "string", title: "Name", default: "Poker Tournament"},
-              initial_player_count: {type: "number", title: "Initial Player Count", default: 9},
+              entry_player_count: {type: "number", title: "Initial Player Count", default: 9},
               starting_chips: {type: "number", title: "Chips Amount", default: 9000},
               blind_levels: {type: "number", title: "Blind Level Count", default: 30},
               blind_time: {type: "number", title: "Blind Level Time", default: 15},
               break_time: {type: "number", title: "Break Level Time", default: 5},
-              levels_between_break: {type: "number", title: "Levels Between Break", default: 3},
               buyin: {type: "number", title: "Buyin Amount", default: 10},
               rebuy: {type: "number", title: "Rebuy Amount", default: 10},
               rebuys_through_level: {type: "number", title: "Rebuy Allowed Until Level", default: 6},
@@ -47,13 +46,18 @@ export default class Configuration extends React.Component {
                  title : "Level",
                  type: "object", 
                   properties: {
-                    small_blind: {type: "number", title: "Small Blind"},
-                    big_blind: {type: "number", title: "Big Blind"},
-                    ante: {type: "number", title: "Ante"}     
+                    small_blind: {type: "number", title: "Small Blind", default: 0},
+                    big_blind: {type: "number", title: "Big Blind", default: 0},
+                    ante: {type: "number", title: "Ante", default: 0},
+                    break: {type: "boolean", title: "Break", default: false} 
                   }     
               }}
             }
           };
+
+        //   "disabled": {
+        //     "ui:disabled": true
+
 
         this.uiSchema = {
             "blinds": {
@@ -61,7 +65,16 @@ export default class Configuration extends React.Component {
                     orderable: true,
                     addable: true,
                     removable: true
-                }
+                },
+            },
+            "blinds.items.propreties.small_blind": {
+                "ui:emptyValue:": 0
+            },
+            "blinds.items.propreties.big_blind": {
+                "ui:emptyValue:": 0
+            },
+            "blinds.items.propreties.ante_blind": {
+                "ui:emptyValue:": 0
             }
         };
     }
@@ -90,18 +103,22 @@ export default class Configuration extends React.Component {
     }
 
     updateRawJson(rawJson) {
-        console.log(rawJson);
+
+        var jsonObject = JSON.parse(rawJson);
+        jsonObject.entry_player_count = jsonObject.current_player_count;
+
         this.setState({
             isPaneOpen: this.state.isPaneOpen,
-            config: rawJson,
-            configObject: JSON.parse(rawJson)
+            config: JSON.stringify(jsonObject),
+            configObject: jsonObject
         })
         ConfigurationActions.configChange(rawJson);
     }
 
     updateJsonObject(object) {
+        object.entry_player_count = object.current_player_count;
+
         const rawJson = JSON.stringify(object);
-        console.log(object);
         this.setState({
             isPaneOpen: this.state.isPaneOpen,
             config: rawJson,
@@ -112,12 +129,10 @@ export default class Configuration extends React.Component {
 
     updateConfiguration() {
         ConfigurationActions.configChange(this.state.config);
-        // this.closePane();
     }  
 
     readTextFile (file) {
         var me = this;
-        console.log(file);
         var reader = new FileReader()
         reader.onload = function (event) {
             me.updateRawJson(event.target.result);

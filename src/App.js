@@ -2,15 +2,17 @@ import React  from 'react';
 import Reflux from 'reflux';
 import Settings  from './images/settings.svg';
 import ControlImg from './images/control.svg';
-import Configuration  from './Configuration';
-import Control from './Control';
-import ConfigurationStore from './ConfigurationStore';
-import TimerStore from './TimerStore';
-import Timer from './Timer';
-import ElapsedTimer from './ElapsedTimer';
-import CurrentTime from './CurrentTime';
-import update from 'react-addons-update';
+import Configuration  from './configuration/Configuration';
+import ConfigurationStore from './configuration/ConfigurationStore';
+import ControlStore from './control/ControlStore';
+import Control from './control/Control';
+import Timer from './timers/Timer';
+import ElapsedTimer from './timers/ElapsedTimer';
+import CurrentTime from './timers/CurrentTime';
 import './App.css';
+import BreakTimer from './timers/BreakTimer';
+import Sound from 'react-sound';
+import BuzzerSound from './sounds/blind_buzzer.mp3';
 
 
 class App extends Reflux.Component {
@@ -25,12 +27,15 @@ class App extends Reflux.Component {
       entry_player_count: 9,
       current_player_count: 9,
       starting_chips: 20000,
+      break_time: 5,
+      levels_between_break: 3,
       buyin: 10,
       addon: 0,
       rebuy: 10,
       rebuy_count: 0, 
       max_rebuys: 1,
       rebuys_through_level: 6,
+      timerStarted: false,
       blinds: [{"small_blind":25,"big_blind":50,"ante":10},{"small_blind":50,"big_blind":100,"ante":0},{"small_blind":100,"big_blind":200,"ante":0},{"small_blind":200,"big_blind":300,"ante":0},{"small_blind":300,"big_blind":600,"ante":0}]
     }
 
@@ -39,7 +44,7 @@ class App extends Reflux.Component {
     this.onNextBlind = this.onNextBlind.bind(this);
     this.controlClose = this.controlClose.bind(this);
     this.settingsClose = this.settingsClose.bind(this);
-    this.stores = [ConfigurationStore, TimerStore];
+    this.stores = [ConfigurationStore, ControlStore];
   }
 
   settingsClick() {
@@ -66,26 +71,55 @@ class App extends Reflux.Component {
     })
   }
 
+  finishedPlayingSound() {
+    this.setState({
+      playSound: Sound.status.STOPPED
+    });
+  }
+
   onNextBlind() {
+    this.setState({
+      playSound: Sound.status.PLAYING
+    });
     console.log("next blind");
-    const nextBlindLevel = this.state.current_blind_level + 1
-    this.setState(
-      update(this.state, { current_blind_level : { $set: nextBlindLevel }})
-    );
+    const nextBlindLevel = this.state.current_blind_level + 1;
+    this.setState({
+      current_blind_level: nextBlindLevel,
+    });
+  }
+
+  levelUntilBreak(current_blind_level, blinds) {
+    var count = 1;
+    if(current_blind_level + 1 < blinds.length) {
+      for(var i = current_blind_level+1; i < blinds.length; i++) {
+        if(blinds[i].break){
+          return count;
+        }
+        count = count + 1;
+      }
+    }
+    return count;
   }
 
   render() {
   
     var me = this;
     const {buyin, rebuy, addon, 
-      current_blind_level, blinds, entry_player_count, current_player_count,
-      rebuy_count, rebuys_through_level, max_rebuys, starting_chips} = me.state;
+      current_blind_level, blinds, blind_time, break_time, entry_player_count, current_player_count,
+      rebuy_count, rebuys_through_level, max_rebuys, starting_chips,
+      timerStarted} = me.state;
 
     const chip_count = starting_chips * entry_player_count;
-    const avg_chip_count = chip_count / current_player_count;
+    const avg_chip_count = Math.floor(chip_count / current_player_count);
     const total_pot = (buyin * entry_player_count) + (rebuy * rebuy_count);
     const current_blind_info = blinds[current_blind_level];
     const next_blind_info = blinds[current_blind_level + 1];
+    const isItBreakTime = current_blind_info.break;
+    var blindOrBreakTime = isItBreakTime ? break_time : blind_time;
+
+    var levels_until_break = this.levelUntilBreak(current_blind_level, blinds);
+    var time_until_break = levels_until_break * blind_time;
+
     return (
       <div>
         <div className="container-fluid">
@@ -94,8 +128,15 @@ class App extends Reflux.Component {
             {me.state.name}
             </div>
           </div>
+          <Sound url={BuzzerSound} playStatus={me.state.playSound} onFinishedPlaying={this.finishedPlayingSound}></Sound>
           <Configuration handler={me.settingsClose} isPaneOpen={me.state.isConfigOpen}/>
-          <Control handler={me.controlClose} isPaneOpen={me.state.isControlOpen} />
+          <Control 
+            handler={me.controlClose} 
+            isPaneOpen={me.state.isControlOpen}
+            current_player_count={current_player_count}
+            entry_player_count={entry_player_count}
+            started={timerStarted}
+          />
           <div className="row  bg-dark text-light">
             <div className="col-md-12 h4 text-center">
               <img className="settings-fill-grayscale" height="30" width="30" title="Action options" alt="Control" src={ControlImg} onClick={me.controlClick}></img>
@@ -105,26 +146,33 @@ class App extends Reflux.Component {
           </div>
           <div className="row text-center">
             <div className="col-md-2 align-self-center">Round <br/>{current_blind_level + 1}</div>
+            
             <div className="col-md-8 h1 align-self-center">
-              <Timer start={me.state.timerStarted} blind_time={me.state.blind_time} onComplete={me.onNextBlind} />
+              <Timer start={timerStarted} blind_time={blindOrBreakTime} onComplete={me.onNextBlind} />
             </div>
             <div className="col-md-2 align-self-center"><CurrentTime></CurrentTime></div>
           </div>
           <div className="row text-center">
             <div className="col-md-2 align-self-center">Entries <br/> {entry_player_count}</div>
             <div className="col-md-8"></div>
-            <div className="col-md-2 align-self-center">Elapsed Time <br/> <ElapsedTimer start={me.state.timerStarted} /></div>
+            <div className="col-md-2 align-self-center">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
           </div>
           <div className="row text-center">
             <div className="col-md-2 align-self-center">Players In <br/>{current_player_count}</div>
             <div className="col-md-8"></div>
-            <div className="col-md-2 align-self-center">Next Break <br/></div>
+            <div className="col-md-2 align-self-center">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
           </div>
           <div className="row text-center">
             <div className="col-md-2 align-self-center">Rebuys <br/>{rebuy_count}</div>
+
+            {isItBreakTime && 
+            <div className="col-md-8 text-next-blind">BREAK</div>
+            }
+            {!isItBreakTime && 
             <div className="col-md-8 text-next-blind">{current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
             {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}            
             </div>
+            }
             <div className="col-md-2"></div>
           </div>
           <div className="row text-center">
@@ -134,7 +182,12 @@ class App extends Reflux.Component {
           </div>
           <div className="row text-center">
             <div className="col-md-2 align-self-center">Avg Stack <br/>${avg_chip_count}</div>
-            <div className="col-md-8 align-self-center">Next Round: <br/> Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
+            {!isItBreakTime && 
+            <div className="col-md-8 align-self-center">Next Round: <br/>Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
+            } 
+            {isItBreakTime && 
+            <div className="col-md-8 align-self-center">Next Round: <br/>BREAK</div>
+            }
             <div className="col-md-2"></div>
           </div>
           <div className="row text-center">
