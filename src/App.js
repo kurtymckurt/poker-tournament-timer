@@ -32,6 +32,7 @@ class App extends Reflux.Component {
       levels_between_break: 3,
       buyin: 10,
       addon: 0,
+      addon_count: 0,
       rebuy: 10,
       rebuy_count: 0, 
       max_rebuys: 1,
@@ -85,13 +86,11 @@ class App extends Reflux.Component {
   }
 
   onNextBlind() {
-    this.setState({
-      playSound: Sound.status.PLAYING
-    });
-    console.log("next blind");
     const nextBlindLevel = this.state.current_blind_level + 1;
     this.setState({
       current_blind_level: nextBlindLevel,
+      restart : true,
+      playSound: Sound.status.PLAYING
     });
   }
 
@@ -113,19 +112,25 @@ class App extends Reflux.Component {
     var me = this;
     const {buyin, rebuy, addon, 
       current_blind_level, blinds, blind_time, break_time, entry_player_count, current_player_count,
-      rebuy_count, rebuys_through_level, max_rebuys, starting_chips,
-      timerStarted, places} = me.state;
+      rebuy_count, rebuys_through_level, max_rebuys, starting_chips, addon_count,
+      timerStarted, places, restart} = me.state;
 
     const chip_count = starting_chips * entry_player_count;
     const avg_chip_count = Math.floor(chip_count / current_player_count);
-    const total_pot = (buyin * entry_player_count) + (rebuy * rebuy_count);
+    const total_pot = (buyin * entry_player_count) + (rebuy * rebuy_count) + (addon * addon_count);
     const current_blind_info = blinds[current_blind_level];
     const next_blind_info = blinds[current_blind_level + 1];
     const isItBreakTime = current_blind_info.break;
+
+    const isNextRoundBreakTime = next_blind_info.break;
+
     var blindOrBreakTime = isItBreakTime ? break_time : blind_time;
 
     var levels_until_break = this.levelUntilBreak(current_blind_level, blinds);
     var time_until_break = levels_until_break * blind_time;
+
+    var allowAddOn = addon > 0;
+    var allowRebuy = rebuy > 0 || rebuys_through_level >= current_blind_level;
 
     return (
       <div>
@@ -155,7 +160,13 @@ class App extends Reflux.Component {
                 <div className="col-md-12">Entries <br/> {entry_player_count}</div>
               </div>
               <div className="row bottom-border">
+                <div className="col-md-12">Players In <br/> {current_player_count}</div>
+              </div>
+              <div className="row bottom-border">
                 <div className="col-md-12">Rebuys <br/>{rebuy_count}</div>
+              </div>
+              <div className="row bottom-border">
+                <div className="col-md-12">Add Ons <br/>{addon_count}</div>
               </div>
               <div className="row bottom-border">
                 <div className="col-md-12">Chip Count <br/>${chip_count}</div>
@@ -163,7 +174,7 @@ class App extends Reflux.Component {
               <div className="row bottom-border">
               <div className="col-md-12">Avg Stack <br/>${avg_chip_count}</div>
               </div>
-              <div className="row bottom-border">
+              <div className="row">
               <div className="col-md-12">Total Pot <br/>${total_pot}</div>
               </div>
             </div>
@@ -171,7 +182,7 @@ class App extends Reflux.Component {
               {/* center section */}
               <div className="row bottom-border">
                 <div className="col-md-12">
-                  <Timer start={timerStarted} blind_time={blindOrBreakTime} onComplete={me.onNextBlind} />
+                  <Timer start={timerStarted} restart={restart} blind_time={blindOrBreakTime} onComplete={me.onNextBlind} />
                 </div>
               </div>
               <div className="row bottom-border">
@@ -179,16 +190,16 @@ class App extends Reflux.Component {
                   <div className="col-md-12 text-next-blind">BREAK</div>
                 }
                 {!isItBreakTime && 
-                  <div className="col-md-12 text-next-blind">{current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
+                  <div className="col-md-12 text-next-blind">Current Blinds: <br/> {current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
                 {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}            
                 </div>
                 }
               </div>
               <div className="row">
-                {!isItBreakTime && 
+                {!isNextRoundBreakTime && 
                   <div className="col-md-12">Next Round: <br/>Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
                 } 
-                {isItBreakTime && 
+                {isNextRoundBreakTime && 
                   <div className="col-md-12">Next Round: <br/>BREAK</div>
                 }
               </div>
@@ -205,22 +216,23 @@ class App extends Reflux.Component {
                 <div className="col-md-12">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
               </div>
               <div className="row">
-              <div className="col-md-12"></div>
+              <div className="col-md-12"><Places total_pot={total_pot} places={places} /></div>
               </div>
 
           </div>       
         </div>
-        <div className="row">
-          <div className="col-md-12"><Places total_pot={total_pot} places={places} /></div>
-        </div>
         <Sound url={BuzzerSound} playStatus={me.state.playSound} onFinishedPlaying={this.finishedPlayingSound}></Sound>
-        <Configuration handler={me.settingsClose} isPaneOpen={me.state.isConfigOpen}/>
+        <Configuration handler={me.settingsClose} isPaneOpen={me.state.isConfigOpen} />
         <Control 
           handler={me.controlClose} 
           isPaneOpen={me.state.isControlOpen}
           current_player_count={current_player_count}
           entry_player_count={entry_player_count}
           started={timerStarted}
+          rebuy_count={rebuy_count}
+          addon_count={addon_count}
+          allowRebuy={allowRebuy}
+          allowAddOn={allowAddOn}
           />
       </div>
     </div>

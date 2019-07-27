@@ -7,7 +7,7 @@ export default class CurrentTime extends React.Component {
       
         return (
             <div className="text-center">
-                CurrentTime <br/> <Moment interval={1000} format="hh:mm:ss A"></Moment>
+                Current Time <br/> <Moment interval={1000} format="hh:mm:ss A"></Moment>
             </div>
         )
     }

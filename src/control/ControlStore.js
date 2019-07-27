@@ -26,10 +26,17 @@ export default class ControlStore extends Reflux.Store
         this.trigger(state);
     }
 
-    onRebuyPlayer(entryCount)
+    onRebuyPlayer(rebuy_count)
     {
         var state = {
-            entry_player_count: entryCount + 1
+            rebuy_count: rebuy_count + 1
+        }
+        this.trigger(state);
+    }
+
+    onAddAddOn(addon_count) {
+        var state = {
+            addon_count: addon_count + 1
         }
         this.trigger(state);
     }
@@ -37,6 +44,13 @@ export default class ControlStore extends Reflux.Store
     onStartOrPauseGame(timerStarted) {
         var state = {
             timerStarted: !timerStarted
+        }
+        this.trigger(state);
+    }
+
+    onResetRestartState() {
+        var state =  {
+            restart: false
         }
         this.trigger(state);
     }

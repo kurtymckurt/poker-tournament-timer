@@ -59,10 +59,6 @@ export default class Configuration extends React.Component {
             }
           };
 
-        //   "disabled": {
-        //     "ui:disabled": true
-
-
         this.uiSchema = {
             "blinds": {
                 "ui:options": {

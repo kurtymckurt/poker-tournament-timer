@@ -45,12 +45,12 @@ export default class Places extends React.Component {
 
         return(
             <div>
-                  <View style={styles.container}> 
+                  {/* <View style={styles.container}> 
                     <AutoScrolling style={styles.scrolling} duration="10000" endPadding={50}>
                         <Text>{listItems}</Text>
                     </AutoScrolling>
-                 </View> 
-                
+                 </View>  */}
+                {listItems}
             </div>
         );
     }

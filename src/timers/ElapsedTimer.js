@@ -12,7 +12,7 @@ export default class ElapsedTimer extends Reflux.Component {
             current_hours: 0,
             current_minutes: 0,
             current_seconds: 0,
-            timerStarted: false
+            started: false
         }
 
         this.onComplete = props.onComplete;
@@ -23,12 +23,9 @@ export default class ElapsedTimer extends Reflux.Component {
 
     componentWillReceiveProps(nextProps) {
         // You don't have to do this check first, but it can help prevent an unneeded render
-        if(nextProps.start !== undefined && this.state.start !== nextProps.start){
-
+        if(!this.state.started){
             if(nextProps.start) {
                 this.onStart();
-            } else {
-                this.onPause();
             }
         }
     }
@@ -52,7 +49,8 @@ export default class ElapsedTimer extends Reflux.Component {
 
     onStart() {
         this.setState({
-            start_time: moment()
+            start_time: moment(),
+            started: true
         });
         this.internal_clock = setInterval(this.tick, 500);
     }

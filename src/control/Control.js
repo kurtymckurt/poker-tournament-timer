@@ -15,6 +15,7 @@ export default class Control extends React.Component {
         this.closePane = this.closePane.bind(this);
         this.addPlayer = this.addPlayer.bind(this);
         this.knockOutPlayer = this.knockOutPlayer.bind(this);
+        this.addAddOn = this.addAddOn.bind(this);
         this.startOrPauseGame = this.startOrPauseGame.bind(this);
         this.rebuyPlayer = this.rebuyPlayer.bind(this);
     }
@@ -51,7 +52,11 @@ export default class Control extends React.Component {
     }
 
     rebuyPlayer(){
-        ControlActions.rebuyPlayer(this.props.entry_player_count);
+        ControlActions.rebuyPlayer(this.props.rebuy_count);
+    }
+
+    addAddOn(){
+        ControlActions.addAddOn(this.props.addon_count);
     }
 
     startOrPauseGame() {
@@ -60,10 +65,11 @@ export default class Control extends React.Component {
 
     render() {
         var me = this;
-        const {current_player_count, entry_player_count, started} = me.props;
+        const {current_player_count, entry_player_count, rebuy_count, started, addon_count, allowRebuy,
+            allowAddOn} = me.props;
 
-        var startOrPause = !started ? (<button onClick={this.startOrPauseGame}>Start</button>)
-            : (<button onClick={this.startOrPauseGame}>Pause</button>)
+        var startOrPause = !started ? (<button onClick={this.startOrPauseGame}>Start Tournament</button>)
+            : (<button onClick={this.startOrPauseGame}>Pause Tournament</button>)
 
         return (
             <SlidingPane
@@ -84,7 +90,9 @@ export default class Control extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         Current Players: {current_player_count} <br/>
-                        Total Entries: {entry_player_count}
+                        Total Entries: {entry_player_count} <br/>
+                        Rebuys: {rebuy_count} <br/>
+                        Addons: {addon_count}
                     </div>
                 </div>
 
@@ -92,6 +100,8 @@ export default class Control extends React.Component {
                     <div className="col-md-3">
                         {startOrPause}
                     </div>
+                </div>
+                <div className="row text-center">
                     <div className="col-md-3">
                         <button onClick={this.addPlayer}>Add Player</button>
                     </div>
@@ -99,7 +109,10 @@ export default class Control extends React.Component {
                         <button onClick={this.knockOutPlayer}>Remove Player</button>
                     </div>
                     <div className="col-md-3">
-                        <button onClick={this.rebuyPlayer}>Rebuy Player</button>
+                        <button onClick={this.rebuyPlayer} disabled={!allowRebuy}>Rebuy Player</button>
+                    </div>
+                    <div className="col-md-3">
+                        <button onClick={this.addAddOn} disabled={!allowAddOn}>Add Add On</button>
                     </div>
                 </div>
             </div>

@@ -1,9 +1,9 @@
 {
     "name": "Poker Tournament",
-    "initial_player_count": 9,
+    "current_player_count": 9,
     "starting_chips": 20000,
     "blind_levels": 40,
-    "blind_time": 15,
+    "blind_time": 1,
     "break_time": 5,
     "levels_between_break": 3,
     "buyin": 10,
@@ -11,6 +11,7 @@
     "max_rebuys": 1,
     "rebuys_through_level": 6,
     "addon": 0,
+    "addon_count": 0,
     "blinds": [
         {
             "small_blind": 25,
@@ -45,15 +46,8 @@
         }
     ],
     "places" : [
-        10,
-        10,
-        10,
-        10,
-        10,
-        10,
-        10,
-        10,
-        10,
+        60,
+        30,
         10
     ]
 }

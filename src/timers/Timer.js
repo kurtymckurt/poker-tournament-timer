@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import ControlActions from '../control/ControlActions';
 
 export default class Timer extends React.Component {
 
@@ -38,7 +39,6 @@ export default class Timer extends React.Component {
         var seconds = diff % 60;
         this.setState({
             end_time: this.state.end_time,
-            blind_time: this.state.blind_time,
             current_minutes: minutes,
             current_seconds: seconds
         });
@@ -53,13 +53,17 @@ export default class Timer extends React.Component {
         if(nextProps.blind_time !== undefined && this.state.original_minutes !== nextProps.blind_time){
             this.setState({
                 blind_time: nextProps.blind_time,
+                current_minutes: nextProps.blind_time
             });
         }
-        if(nextProps.start !== this.state.start) {
+        if(nextProps.start !== this.state.start || nextProps.restart) {
             this.setState({
                 end_time: moment().add(this.state.blind_time, 'm'),
                 start: nextProps.start
-            })
+            }) 
+            if(nextProps.restart) {
+                ControlActions.resetRestartState();
+            }
             this.internal_clock = setInterval(this.tick, 500);
         }
 
