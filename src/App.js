@@ -11,6 +11,7 @@ import ElapsedTimer from './timers/ElapsedTimer';
 import CurrentTime from './timers/CurrentTime';
 import './App.css';
 import BreakTimer from './timers/BreakTimer';
+import Places from './components/Places';
 import Sound from 'react-sound';
 import BuzzerSound from './sounds/blind_buzzer.mp3';
 
@@ -36,7 +37,12 @@ class App extends Reflux.Component {
       max_rebuys: 1,
       rebuys_through_level: 6,
       timerStarted: false,
-      blinds: [{"small_blind":25,"big_blind":50,"ante":10},{"small_blind":50,"big_blind":100,"ante":0},{"small_blind":100,"big_blind":200,"ante":0},{"small_blind":200,"big_blind":300,"ante":0},{"small_blind":300,"big_blind":600,"ante":0}]
+      blinds: [{"small_blind":25,"big_blind":50,"ante":10},{"small_blind":50,"big_blind":100,"ante":0},{"small_blind":100,"big_blind":200,"ante":0},{"small_blind":200,"big_blind":300,"ante":0},{"small_blind":300,"big_blind":600,"ante":0}],
+      places : [
+        60,
+        30,
+        10
+      ]
     }
 
     this.settingsClick = this.settingsClick.bind(this);
@@ -108,7 +114,7 @@ class App extends Reflux.Component {
     const {buyin, rebuy, addon, 
       current_blind_level, blinds, blind_time, break_time, entry_player_count, current_player_count,
       rebuy_count, rebuys_through_level, max_rebuys, starting_chips,
-      timerStarted} = me.state;
+      timerStarted, places} = me.state;
 
     const chip_count = starting_chips * entry_player_count;
     const avg_chip_count = Math.floor(chip_count / current_player_count);
@@ -123,21 +129,13 @@ class App extends Reflux.Component {
 
     return (
       <div>
+        {/* Header section */}
         <div className="container-fluid text-light">
           <div className="row core-color">
             <div className="h1 text-center col-md-12">
             {me.state.name}
             </div>
           </div>
-          <Sound url={BuzzerSound} playStatus={me.state.playSound} onFinishedPlaying={this.finishedPlayingSound}></Sound>
-          <Configuration handler={me.settingsClose} isPaneOpen={me.state.isConfigOpen}/>
-          <Control 
-            handler={me.controlClose} 
-            isPaneOpen={me.state.isControlOpen}
-            current_player_count={current_player_count}
-            entry_player_count={entry_player_count}
-            started={timerStarted}
-          />
           <div className="row core-color text-light">
             <div className="col-md-12 h4 text-center">
               <img className="settings-fill-grayscale" height="30" width="30" title="Action options" alt="Control" src={ControlImg} onClick={me.controlClick}></img>
@@ -145,59 +143,87 @@ class App extends Reflux.Component {
               <img className="settings-fill-grayscale" height="30" width="30" title="Configuration options" alt="Settings" src={Settings} onClick={me.settingsClick}></img>
             </div>
           </div>
-          <div className="row text-center side-bar-color top-border">
-            <div className="col-md-2 align-self-center bottom-border">Round <br/>{current_blind_level + 1}</div>
-            
-            <div className="col-md-8 align-self-center core-color left-right-border">
-              <Timer start={timerStarted} blind_time={blindOrBreakTime} onComplete={me.onNextBlind} />
+        </div>
+        <div className="container-fluid h-100 d-inline-block text-light top-border bottom-border">
+          <div className="row align-items-center side-bar-color text-center">
+            <div className="col-md-2">
+              {/* left section */}
+              <div className="row bottom-border">
+                <div className="col-md-12">Round <br/>{current_blind_level + 1}</div>
+              </div>
+              <div className="row bottom-border">
+                <div className="col-md-12">Entries <br/> {entry_player_count}</div>
+              </div>
+              <div className="row bottom-border">
+                <div className="col-md-12">Rebuys <br/>{rebuy_count}</div>
+              </div>
+              <div className="row bottom-border">
+                <div className="col-md-12">Chip Count <br/>${chip_count}</div>
+              </div>
+              <div className="row bottom-border">
+              <div className="col-md-12">Avg Stack <br/>${avg_chip_count}</div>
+              </div>
+              <div className="row bottom-border">
+              <div className="col-md-12">Total Pot <br/>${total_pot}</div>
+              </div>
             </div>
-            <div className="col-md-2 align-self-center bottom-border"><CurrentTime></CurrentTime></div>
-          </div>
-          <div className="row text-center side-bar-color">
-            <div className="col-md-2 align-self-center bottom-border ">Entries <br/> {entry_player_count}</div>
-            <div className="col-md-8 core-color left-right-border"></div>
-            <div className="col-md-2 align-self-center bottom-border">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
-          </div>
-          <div className="row text-center side-bar-color">
-            <div className="col-md-2 align-self-center bottom-border">Players In <br/>{current_player_count}</div>
-            <div className="col-md-8 core-color left-right-border"></div>
-            <div className="col-md-2 align-self-center bottom-border">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
-          </div>
-          <div className="row text-center side-bar-color">
-            <div className="col-md-2 align-self-center bottom-border">Rebuys <br/>{rebuy_count}</div>
+            <div className="col-md-8 core-color left-right-border text-center">
+              {/* center section */}
+              <div className="row bottom-border">
+                <div className="col-md-12">
+                  <Timer start={timerStarted} blind_time={blindOrBreakTime} onComplete={me.onNextBlind} />
+                </div>
+              </div>
+              <div className="row bottom-border">
+                {isItBreakTime && 
+                  <div className="col-md-12 text-next-blind">BREAK</div>
+                }
+                {!isItBreakTime && 
+                  <div className="col-md-12 text-next-blind">{current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
+                {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}            
+                </div>
+                }
+              </div>
+              <div className="row">
+                {!isItBreakTime && 
+                  <div className="col-md-12">Next Round: <br/>Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
+                } 
+                {isItBreakTime && 
+                  <div className="col-md-12">Next Round: <br/>BREAK</div>
+                }
+              </div>
+            </div>
+            <div className="col-md-2 side-bar-color text-center align-items-center">
+              {/* right section */}
+              <div className="row bottom-border">
+                <div className="col-md-12"><CurrentTime></CurrentTime></div>
+              </div>
+              <div className="row bottom-border">
+                <div className="col-md-12">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
+              </div>
+              <div className="row bottom-border">
+                <div className="col-md-12">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
+              </div>
+              <div className="row">
+              <div className="col-md-12"></div>
+              </div>
 
-            {isItBreakTime && 
-            <div className="col-md-8 text-next-blind core-color all-around-border">BREAK</div>
-            }
-            {!isItBreakTime && 
-            <div className="col-md-8 text-next-blind core-color all-around-border">{current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
-            {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}            
-            </div>
-            }
-            <div className="col-md-2"></div>
-          </div>
-          <div className="row text-center side-bar-color">
-            <div className="col-md-2 align-self-center bottom-border">Chip Count <br/>${chip_count}</div>
-            <div className="col-md-8 core-color left-right-border"></div>
-            <div className="col-md-2"></div>
-          </div>
-          <div className="row text-center side-bar-color">
-            <div className="col-md-2 align-self-center bottom-border">Avg Stack <br/>${avg_chip_count}</div>
-            {!isItBreakTime && 
-            <div className="col-md-8 align-self-center core-color left-right-border">Next Round: <br/>Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
-            } 
-            {isItBreakTime && 
-            <div className="col-md-8 align-self-center core-color left-right-border">Next Round: <br/>BREAK</div>
-            }
-            <div className="col-md-2"></div>
-          </div>
-          <div className="row text-center side-bar-color">
-            <div className="col-md-2 align-self-center">Total Pot <br/>${total_pot}</div>
-            <div className="col-md-8 core-color left-right-border"></div>
-            <div className="col-md-2"></div>
-          </div>
-        </div>   
+          </div>       
+        </div>
+        <div className="row">
+          <div className="col-md-12"><Places total_pot={total_pot} places={places} /></div>
+        </div>
+        <Sound url={BuzzerSound} playStatus={me.state.playSound} onFinishedPlaying={this.finishedPlayingSound}></Sound>
+        <Configuration handler={me.settingsClose} isPaneOpen={me.state.isConfigOpen}/>
+        <Control 
+          handler={me.controlClose} 
+          isPaneOpen={me.state.isControlOpen}
+          current_player_count={current_player_count}
+          entry_player_count={entry_player_count}
+          started={timerStarted}
+          />
       </div>
+    </div>
     );
   }
 }

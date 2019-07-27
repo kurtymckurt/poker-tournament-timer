@@ -51,6 +51,10 @@ export default class Configuration extends React.Component {
                     ante: {type: "number", title: "Ante", default: 0},
                     break: {type: "boolean", title: "Break", default: false} 
                   }     
+              }},
+              places: {type: "array", title: "Places", items:{
+                  title: "percentage",
+                  type: "number"
               }}
             }
           };
