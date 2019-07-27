@@ -9,8 +9,7 @@ export default class Timer extends React.Component {
 
         this.state = {
             end_time: moment(),
-            blind_time: 15,
-            current_minutes: 15,
+            current_minutes: props.levelTimes[props.currentLevel],
             current_seconds: 0,
             start: false
         }
@@ -19,6 +18,7 @@ export default class Timer extends React.Component {
         this.start = this.start.bind(this);
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
+        this.setNextTime = this.setNextTime.bind(this);
     }
 
     tick() {
@@ -31,8 +31,8 @@ export default class Timer extends React.Component {
         var diff = dateExpected.diff(dateNow, 'seconds');
 
         if(diff <= 0) {
-            this.onPause();
             this.onComplete();
+            this.setNextTime();
         }
 
         var minutes = Math.floor(diff / 60);
@@ -44,21 +44,18 @@ export default class Timer extends React.Component {
         });
     }
 
-    componentDidMount() {
-    
+    setNextTime() {
+        this.setState({
+            end_time: moment().add(this.props.levelTimes[this.props.currentLevel], 'm'),
+            current_minutes: this.props.levelTimes[this.props.currentLevel]
+        });
     }
 
     componentWillReceiveProps(nextProps) {
         // You don't have to do this check first, but it can help prevent an unneeded render
-        if(nextProps.blind_time !== undefined && this.state.original_minutes !== nextProps.blind_time){
-            this.setState({
-                blind_time: nextProps.blind_time,
-                current_minutes: nextProps.blind_time
-            });
-        }
         if(nextProps.start !== this.state.start || nextProps.restart) {
             this.setState({
-                end_time: moment().add(this.state.blind_time, 'm'),
+                end_time: moment().add(this.nextProps.levelTimes[this.nextProps.currentLevel], 'm'),
                 start: nextProps.start
             }) 
             if(nextProps.restart) {
@@ -75,7 +72,7 @@ export default class Timer extends React.Component {
 
     start() {
         this.setState({
-            end_time: moment().add(this.state.blind_time,'m')
+            end_time: moment().add(this.props.blind_time,'m')
         });
         this.internal_clock = setInterval(this.tick, 500);
     }

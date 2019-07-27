@@ -94,6 +94,15 @@ class App extends Reflux.Component {
     });
   }
 
+  calculateLevelTimes(blinds, blind_time, break_time) {
+    var levelTimes = [];
+    for(var i = 0; i < blinds.length; i++) {
+      var length = blinds[i].break ? break_time : blind_time;
+      levelTimes.push( length );
+    }
+    return levelTimes;
+  }
+
   levelUntilBreak(current_blind_level, blinds) {
     var count = 1;
     if(current_blind_level + 1 < blinds.length) {
@@ -131,7 +140,7 @@ class App extends Reflux.Component {
 
     var allowAddOn = addon > 0;
     var allowRebuy = rebuy > 0 || rebuys_through_level >= current_blind_level;
-
+    var levelTimes = this.calculateLevelTimes(blinds, blind_time, break_time);
     return (
       <div>
         {/* Header section */}
@@ -182,7 +191,7 @@ class App extends Reflux.Component {
               {/* center section */}
               <div className="row bottom-border">
                 <div className="col-md-12">
-                  <Timer start={timerStarted} restart={restart} blind_time={blindOrBreakTime} onComplete={me.onNextBlind} />
+                  <Timer start={timerStarted} restart={restart} levelTimes={levelTimes} currentLevel={current_blind_level} onComplete={me.onNextBlind} />
                 </div>
               </div>
               <div className="row bottom-border">
