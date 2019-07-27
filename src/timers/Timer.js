@@ -78,11 +78,8 @@ export default class Timer extends React.Component {
 
     render() {
         return (
-            <div className="row">
-                <div className="col-md-12 display-1 text-clock">
-                    {this.state.current_minutes}:{this.state.current_seconds < 10  && '0' + this.state.current_seconds }{this.state.current_seconds >= 10  && this.state.current_seconds}
-                </div>
-               
+            <div className="text-clock">
+                    {this.state.current_minutes}:{this.state.current_seconds < 10  && '0' + this.state.current_seconds }{this.state.current_seconds >= 10  && this.state.current_seconds}             
             </div>
         )
     }

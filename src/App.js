@@ -44,6 +44,7 @@ class App extends Reflux.Component {
     this.onNextBlind = this.onNextBlind.bind(this);
     this.controlClose = this.controlClose.bind(this);
     this.settingsClose = this.settingsClose.bind(this);
+    this.finishedPlayingSound = this.finishedPlayingSound.bind(this);
     this.stores = [ConfigurationStore, ControlStore];
   }
 
@@ -122,8 +123,8 @@ class App extends Reflux.Component {
 
     return (
       <div>
-        <div className="container-fluid">
-          <div className="row bg-dark text-light">
+        <div className="container-fluid text-light">
+          <div className="row core-color">
             <div className="h1 text-center col-md-12">
             {me.state.name}
             </div>
@@ -137,67 +138,62 @@ class App extends Reflux.Component {
             entry_player_count={entry_player_count}
             started={timerStarted}
           />
-          <div className="row  bg-dark text-light">
+          <div className="row core-color text-light">
             <div className="col-md-12 h4 text-center">
               <img className="settings-fill-grayscale" height="30" width="30" title="Action options" alt="Control" src={ControlImg} onClick={me.controlClick}></img>
               ${buyin} Buy-in, {rebuy > 0 && '$' + rebuy + ' to rebuy (Through Round ' + rebuys_through_level + ' Max ' + max_rebuys + ' per player)'}{rebuy === 0 && 'No Rebuys'}, {addon > 0 && '$' + addon + ' to add-on'}{addon === 0 && 'No add-ons'}
               <img className="settings-fill-grayscale" height="30" width="30" title="Configuration options" alt="Settings" src={Settings} onClick={me.settingsClick}></img>
             </div>
           </div>
-          <div className="row text-center">
-            <div className="col-md-2 align-self-center">Round <br/>{current_blind_level + 1}</div>
+          <div className="row text-center side-bar-color top-border">
+            <div className="col-md-2 align-self-center bottom-border">Round <br/>{current_blind_level + 1}</div>
             
-            <div className="col-md-8 h1 align-self-center">
+            <div className="col-md-8 align-self-center core-color left-right-border">
               <Timer start={timerStarted} blind_time={blindOrBreakTime} onComplete={me.onNextBlind} />
             </div>
-            <div className="col-md-2 align-self-center"><CurrentTime></CurrentTime></div>
+            <div className="col-md-2 align-self-center bottom-border"><CurrentTime></CurrentTime></div>
           </div>
-          <div className="row text-center">
-            <div className="col-md-2 align-self-center">Entries <br/> {entry_player_count}</div>
-            <div className="col-md-8"></div>
-            <div className="col-md-2 align-self-center">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
+          <div className="row text-center side-bar-color">
+            <div className="col-md-2 align-self-center bottom-border ">Entries <br/> {entry_player_count}</div>
+            <div className="col-md-8 core-color left-right-border"></div>
+            <div className="col-md-2 align-self-center bottom-border">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
           </div>
-          <div className="row text-center">
-            <div className="col-md-2 align-self-center">Players In <br/>{current_player_count}</div>
-            <div className="col-md-8"></div>
-            <div className="col-md-2 align-self-center">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
+          <div className="row text-center side-bar-color">
+            <div className="col-md-2 align-self-center bottom-border">Players In <br/>{current_player_count}</div>
+            <div className="col-md-8 core-color left-right-border"></div>
+            <div className="col-md-2 align-self-center bottom-border">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
           </div>
-          <div className="row text-center">
-            <div className="col-md-2 align-self-center">Rebuys <br/>{rebuy_count}</div>
+          <div className="row text-center side-bar-color">
+            <div className="col-md-2 align-self-center bottom-border">Rebuys <br/>{rebuy_count}</div>
 
             {isItBreakTime && 
-            <div className="col-md-8 text-next-blind">BREAK</div>
+            <div className="col-md-8 text-next-blind core-color all-around-border">BREAK</div>
             }
             {!isItBreakTime && 
-            <div className="col-md-8 text-next-blind">{current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
+            <div className="col-md-8 text-next-blind core-color all-around-border">{current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
             {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}            
             </div>
             }
             <div className="col-md-2"></div>
           </div>
-          <div className="row text-center">
-            <div className="col-md-2 align-self-center">Chip Count <br/>${chip_count}</div>
-            <div className="col-md-8"></div>
+          <div className="row text-center side-bar-color">
+            <div className="col-md-2 align-self-center bottom-border">Chip Count <br/>${chip_count}</div>
+            <div className="col-md-8 core-color left-right-border"></div>
             <div className="col-md-2"></div>
           </div>
-          <div className="row text-center">
-            <div className="col-md-2 align-self-center">Avg Stack <br/>${avg_chip_count}</div>
+          <div className="row text-center side-bar-color">
+            <div className="col-md-2 align-self-center bottom-border">Avg Stack <br/>${avg_chip_count}</div>
             {!isItBreakTime && 
-            <div className="col-md-8 align-self-center">Next Round: <br/>Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
+            <div className="col-md-8 align-self-center core-color left-right-border">Next Round: <br/>Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
             } 
             {isItBreakTime && 
-            <div className="col-md-8 align-self-center">Next Round: <br/>BREAK</div>
+            <div className="col-md-8 align-self-center core-color left-right-border">Next Round: <br/>BREAK</div>
             }
             <div className="col-md-2"></div>
           </div>
-          <div className="row text-center">
+          <div className="row text-center side-bar-color">
             <div className="col-md-2 align-self-center">Total Pot <br/>${total_pot}</div>
-            <div className="col-md-8"></div>
-            <div className="col-md-2"></div>
-          </div>
-          <div className="row text-center">
-            <div className="col-md-2"></div>
-            <div className="col-md-8"></div>
+            <div className="col-md-8 core-color left-right-border"></div>
             <div className="col-md-2"></div>
           </div>
         </div>   
