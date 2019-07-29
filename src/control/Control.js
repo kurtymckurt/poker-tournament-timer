@@ -60,7 +60,7 @@ export default class Control extends React.Component {
     }
 
     startOrPauseGame() {
-        ControlActions.startOrPauseGame(this.props.started);
+        ControlActions.start(this.props.timeInMinutes);
     }
 
     render() {

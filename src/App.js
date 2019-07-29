@@ -14,6 +14,7 @@ import BreakTimer from './timers/BreakTimer';
 import Places from './components/Places';
 import Sound from 'react-sound';
 import BuzzerSound from './sounds/blind_buzzer.mp3';
+import ControlActions from './control/ControlActions';
 
 
 class App extends Reflux.Component {
@@ -87,12 +88,18 @@ class App extends Reflux.Component {
   }
 
   onNextBlind() {
-    const nextBlindLevel = this.state.current_blind_level + 1;
+    const {current_blind_level, break_time, blind_time, blinds} = this.state;
+    const nextBlindLevel = current_blind_level + 1;
+    const isItBreakTime = blinds[nextBlindLevel].break;
+    const blindOrBreakTime = isItBreakTime ? break_time : blind_time;
+
     this.setState({
       current_blind_level: nextBlindLevel,
-      restart : true,
       playSound: Sound.status.PLAYING
     });
+
+    ControlActions.start(blindOrBreakTime)
+   
   }
 
   calculateLevelTimes(blinds, blind_time, break_time) {
@@ -123,7 +130,7 @@ class App extends Reflux.Component {
     const {buyin, rebuy, addon, 
       current_blind_level, blinds, blind_time, break_time, entry_player_count, current_player_count,
       rebuy_count, rebuys_through_level, max_rebuys, starting_chips, addon_count,
-      timerStarted, places, restart} = me.state;
+      timerStarted, places, restart, end_time} = me.state;
 
     const chip_count = starting_chips * entry_player_count;
     const avg_chip_count = Math.floor(chip_count / current_player_count);
@@ -192,7 +199,7 @@ class App extends Reflux.Component {
               {/* center section */}
               <div className="row bottom-border">
                 <div className="col-md-12">
-                  <Timer start={timerStarted} restart={restart} timeInMinutes={blindOrBreakTime} onComplete={me.onNextBlind} />
+                  <Timer start={timerStarted} restart={restart} end_time={end_time} onComplete={me.onNextBlind} />
                 </div>
               </div>
               <div className="row bottom-border">
@@ -217,7 +224,7 @@ class App extends Reflux.Component {
             <div className="col-md-2 side-bar-color text-center">
               {/* right section */}
               <div className="row bottom-border">
-                <div className="col"><CurrentTime></CurrentTime></div>
+                <div className="col"><CurrentTime/></div>
               </div>
               <div className="row bottom-border">
                 <div className="col">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
@@ -243,6 +250,7 @@ class App extends Reflux.Component {
           addon_count={addon_count}
           allowRebuy={allowRebuy}
           allowAddOn={allowAddOn}
+          timeInMinutes={blindOrBreakTime}
           />
       </div>
     </div>

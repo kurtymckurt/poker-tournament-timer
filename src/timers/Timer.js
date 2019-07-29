@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import ControlActions from '../control/ControlActions';
 
 export default class Timer extends React.Component {
 
@@ -9,37 +8,29 @@ export default class Timer extends React.Component {
 
         this.state = {
             end_time: moment(),
-            current_minutes: props.timeInMinutes,
+            current_minutes: 0,
             current_seconds: 0,
             start: false
         }
         
         this.onComplete = props.onComplete;
-        this.start = this.start.bind(this);
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
-        this.setNextTime = this.setNextTime.bind(this);
         this.internal_clock = setInterval(this.tick, 500);
     }
 
     tick() {
 
-        if(!this.state.start || this.state.paused) {
-          
-            if(!this.state.current_minutes) {
-                this.setState({
-                    current_minutes: this.props.timeInMinutes
-                });
-           }
+        if(!this.state.start) {
            return null;
         }
-        var dateNow = moment();
-        var dateExpected = this.state.end_time;
-        var diff = dateExpected.diff(dateNow, 'seconds');
+        var diff = this.getTimeDiff();
 
         if(diff <= 0) {
             this.onComplete();
-            this.setNextTime();
+            this.setState({
+                start: false
+            })
         }
 
         var minutes = Math.floor(diff / 60);
@@ -51,39 +42,26 @@ export default class Timer extends React.Component {
         });
     }
 
-    setNextTime() {
-        this.setState({
-            end_time: moment().add(this.props.timeInMinutes, 'm'),
-            current_minutes: this.props.timeInMinutes
-        });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // You don't have to do this check first, but it can help prevent an unneeded render
-
-        this.setState({
-            timeInMinutes: nextProps.timeInMinutes,
-            start: nextProps.start
-        });
-        
-        if(nextProps.restart) {
-            this.setState({
-                end_time: moment().add(nextProps.timeInMinutes, 'm'),
-                current_minutes: nextProps.timeInMinutes
-            });
-            ControlActions.resetRestartState();
-        }
+    getTimeDiff() {
+        var dateNow = moment();
+        var dateExpected = this.state.end_time === undefined ? moment() : this.state.end_time;
+        var diff = dateExpected.diff(dateNow, 'seconds');
+        return diff;
     }
 
     onPause() {
         clearInterval(this.internal_clock);
     }
 
-    start() {
+    componentWillReceiveProps(nextProps) {
+        //It hasn't started so we can fix the display 
+        const timeDiff = this.getTimeDiff();
+        const minutes = Math.floor(timeDiff / 60);
         this.setState({
-            end_time: moment().add(this.props.blind_time,'m')
+            end_time: nextProps.end_time,
+            current_minutes: minutes,
+            start: nextProps.start
         });
-        this.internal_clock = setInterval(this.tick, 500);
     }
 
     render() {

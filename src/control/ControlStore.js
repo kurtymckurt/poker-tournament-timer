@@ -1,5 +1,6 @@
 import Reflux from 'reflux';
 import ControlActions from './ControlActions';
+import moment from 'moment';
 
 export default class ControlStore extends Reflux.Store
 {
@@ -41,12 +42,15 @@ export default class ControlStore extends Reflux.Store
         this.trigger(state);
     }
 
-    onStartOrPauseGame(timerStarted) {
+    onStart(timeInMinutes) {
         var state = {
-            timerStarted: !timerStarted
+            timerStarted: true,
+            end_time: moment().add(timeInMinutes, 'm')
         }
         this.trigger(state);
     }
+
+
 
     onResetRestartState() {
         var state =  {

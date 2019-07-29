@@ -29,12 +29,11 @@ export default class Configuration extends React.Component {
         this.schema = {
             title: "Configuration Settings",
             type: "object",
-            required: ["name", "blind_levels"],
+            required: ["name"],
             properties: {
               name: {type: "string", title: "Name", default: "Poker Tournament"},
               entry_player_count: {type: "number", title: "Initial Player Count", default: 9},
               starting_chips: {type: "number", title: "Chips Amount", default: 9000},
-              blind_levels: {type: "number", title: "Blind Level Count", default: 30},
               blind_time: {type: "number", title: "Blind Level Time", default: 15},
               break_time: {type: "number", title: "Break Level Time", default: 5},
               buyin: {type: "number", title: "Buyin Amount", default: 10},
