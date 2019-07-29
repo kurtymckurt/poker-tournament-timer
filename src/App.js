@@ -54,6 +54,7 @@ class App extends Reflux.Component {
     this.controlClose = this.controlClose.bind(this);
     this.settingsClose = this.settingsClose.bind(this);
     this.finishedPlayingSound = this.finishedPlayingSound.bind(this);
+    this.getNumberInLocale = this.getNumberInLocale.bind(this);
     this.stores = [ConfigurationStore, ControlStore];
   }
 
@@ -124,13 +125,19 @@ class App extends Reflux.Component {
     return count;
   }
 
+  getNumberInLocale(number) {
+    const {locale} = this.state;
+    return number.toLocaleString(locale);
+  }
+
+
   render() {
   
     var me = this;
     const {buyin, rebuy, addon, 
       current_blind_level, blinds, blind_time, break_time, entry_player_count, current_player_count,
       rebuy_count, rebuys_through_level, max_rebuys, starting_chips, addon_count,
-      timerStarted, places, restart, end_time} = me.state;
+      timerStarted, places, restart, end_time, locale} = me.state;
 
     const chip_count = starting_chips * entry_player_count;
     const avg_chip_count = Math.floor(chip_count / current_player_count);
@@ -148,6 +155,14 @@ class App extends Reflux.Component {
 
     var allowAddOn = addon > 0;
     var allowRebuy = rebuy > 0 || rebuys_through_level >= current_blind_level;
+
+    var nextBigBlind = this.getNumberInLocale(next_blind_info.big_blind);
+    var nextSmallBlind = this.getNumberInLocale(next_blind_info.small_blind);
+    var nextAnte = this.getNumberInLocale(next_blind_info.ante);
+
+    var currentBigBlind = this.getNumberInLocale(current_blind_info.big_blind);
+    var currentSmallBlind = this.getNumberInLocale(current_blind_info.small_blind);
+    var currentAnte = this.getNumberInLocale(current_blind_info.ante);
 
     return (
       <div>
@@ -174,25 +189,25 @@ class App extends Reflux.Component {
                 <div className="col-md-12">Round <br/>{current_blind_level + 1}</div>
               </div>
               <div className="row bottom-border">
-                <div className="col-md-12">Entries <br/> {entry_player_count}</div>
+                <div className="col-md-12">Entries <br/> {this.getNumberInLocale(entry_player_count) }</div>
               </div>
               <div className="row bottom-border">
-                <div className="col-md-12">Players In <br/> {current_player_count}</div>
+                <div className="col-md-12">Players In <br/> {this.getNumberInLocale(current_player_count)}</div>
               </div>
               <div className="row bottom-border">
-                <div className="col-md-12">Rebuys <br/>{rebuy_count}</div>
+                <div className="col-md-12">Rebuys <br/>{this.getNumberInLocale(rebuy_count)}</div>
               </div>
               <div className="row bottom-border">
-                <div className="col-md-12">Add Ons <br/>{addon_count}</div>
+                <div className="col-md-12">Add Ons <br/>{this.getNumberInLocale(addon_count)}</div>
               </div>
               <div className="row bottom-border">
-                <div className="col-md-12">Chip Count <br/>${chip_count}</div>
+                <div className="col-md-12">Chip Count <br/>${this.getNumberInLocale(chip_count)}</div>
               </div>
               <div className="row bottom-border">
-              <div className="col-md-12">Avg Stack <br/>${avg_chip_count}</div>
+              <div className="col-md-12">Avg Stack <br/>${this.getNumberInLocale(avg_chip_count)}</div>
               </div>
               <div className="row">
-              <div className="col-md-12">Total Pot <br/>${total_pot}</div>
+              <div className="col-md-12">Total Pot <br/>${this.getNumberInLocale(total_pot)}</div>
               </div>
             </div>
             <div className="col-md-8 core-color left-right-border text-center">
@@ -207,14 +222,14 @@ class App extends Reflux.Component {
                   <div className="col-md-12 text-next-blind">BREAK</div>
                 }
                 {!isItBreakTime && 
-                  <div className="col-md-12 text-next-blind">Blinds: <br/> {current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
-                {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}            
+                  <div className="col-md-12 text-next-blind">Blinds: <br/> {currentSmallBlind} / {currentBigBlind}<br/>
+                {current_blind_info.ante > 0 && 'Ante: $' + currentAnte}            
                 </div>
                 }
               </div>
               <div className="row">
                 {!isNextRoundBreakTime && 
-                  <div className="col-md-12">Next Round: <br/>Blinds: {next_blind_info.small_blind} / {next_blind_info.big_blind} <br/> {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}</div>
+                  <div className="col-md-12">Next Round: <br/>Blinds: {nextSmallBlind} / {nextBigBlind} <br/> {next_blind_info.ante > 0 && 'Ante: $' + nextAnte}</div>
                 } 
                 {isNextRoundBreakTime && 
                   <div className="col-md-12">Next Round: <br/>BREAK</div>
@@ -233,7 +248,7 @@ class App extends Reflux.Component {
                 <div className="col">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
               </div>
               <div className="row">
-              <div className="col"><Places total_pot={total_pot} places={places} /></div>
+              <div className="col"><Places total_pot={total_pot} places={places} locale={locale} /></div>
               </div>
 
           </div>       

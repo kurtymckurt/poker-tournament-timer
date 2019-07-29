@@ -11,6 +11,7 @@
     "rebuys_through_level": 6,
     "addon": 0,
     "addon_count": 0,
+    "locale": "de",
     "blinds": [
         {
             "small_blind": 25,
@@ -23,8 +24,8 @@
             "ante": 0
         },
         {
-            "small_blind": 0,
-            "big_blind": 0,
+            "small_blind": 75,
+            "big_blind": 150,
             "ante": 0,
             "break": true
         },
@@ -34,14 +35,188 @@
             "ante": 0
         },
         {
-            "small_blind": 200,
+            "small_blind": 125,
+            "big_blind": 250,
+            "ante": 0
+        },
+        {
+            "small_blind": 150,
             "big_blind": 300,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
+            "small_blind": 200,
+            "big_blind": 400,
             "ante": 0
         },
         {
             "small_blind": 300,
             "big_blind": 600,
             "ante": 0
+        },
+        {
+            "small_blind": 400,
+            "big_blind": 800,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
+            "small_blind": 500,
+            "big_blind": 1000,
+            "ante": 0
+        },
+        {
+            "small_blind": 600,
+            "big_blind": 1200,
+            "ante": 0
+        },
+        {
+            "small_blind": 800,
+            "big_blind": 1600,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
+            "small_blind": 1000,
+            "big_blind": 2000,
+            "ante": 0
+        },
+        {
+            "small_blind": 1250,
+            "big_blind": 2500,
+            "ante": 0
+        },
+        {
+            "small_blind": 1500,
+            "big_blind": 3000,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
+            "small_blind": 2000,
+            "big_blind": 4000,
+            "ante": 0
+        },
+        {
+            "small_blind": 2500,
+            "big_blind": 5000,
+            "ante": 0
+        },
+        {
+            "small_blind": 3000,
+            "big_blind": 6000,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
+            "small_blind": 3500,
+            "big_blind": 7000,
+            "ante": 0
+        },
+        {
+            "small_blind": 4000,
+            "big_blind": 8000,
+            "ante": 0
+        },
+        {
+            "small_blind": 5000,
+            "big_blind": 10000,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
+            "small_blind": 6000,
+            "big_blind": 12000,
+            "ante": 0
+        },
+        {
+            "small_blind": 8000,
+            "big_blind": 16000,
+            "ante": 0
+        },
+        {
+            "small_blind": 10000,
+            "big_blind": 20000,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
+            "small_blind": 12500,
+            "big_blind": 25000,
+            "ante": 0
+        },
+        {
+            "small_blind": 15000,
+            "big_blind": 30000,
+            "ante": 0
+        },
+        {
+            "small_blind": 20000,
+            "big_blind": 40000,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
+        },
+        {
+            "small_blind": 25000,
+            "big_blind": 50000,
+            "ante": 0
+        },
+        {
+            "small_blind": 30000,
+            "big_blind": 60000,
+            "ante": 0
+        },
+        {
+            "small_blind": 40000,
+            "big_blind": 80000,
+            "ante": 0
+        },
+        {
+            "small_blind": 0,
+            "big_blind": 0,
+            "ante": 0,
+            "break": true
         }
     ],
     "places" : [

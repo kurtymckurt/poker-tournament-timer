@@ -66,18 +66,12 @@ export default class Timer extends React.Component {
 
     render() {
 
-        const {current_minutes, current_seconds, timeInMinutes} = this.state;
+        const {current_minutes, current_seconds} = this.state;
         
-        var minuteTime;
-        if(!current_minutes) {
-            minuteTime = timeInMinutes;
-        } else {
-            minuteTime = current_minutes;
-        }
 
         return (
             <div className="text-clock">
-                    {minuteTime}:{current_seconds < 10  && '0' + current_seconds }{current_seconds >= 10  && current_seconds}             
+                     {current_minutes < 10  && '0' + current_minutes }{current_minutes >= 10  && current_minutes}:{current_seconds < 10  && '0' + current_seconds }{current_seconds >= 10  && current_seconds}             
             </div>
         )
     }

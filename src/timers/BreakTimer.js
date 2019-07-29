@@ -16,9 +16,9 @@ export default class BreakTimer extends React.Component {
         }
         
         this.onComplete = props.onComplete;
-        this.start = this.start.bind(this);
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
+        this.internal_clock = setInterval(this.tick, 500);
     }
 
     tick() {
@@ -45,30 +45,14 @@ export default class BreakTimer extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // You don't have to do this check first, but it can help prevent an unneeded render
-        if(nextProps.time !== undefined && this.state.minutes_until_break !== nextProps.time){
-            this.setState({
-                minutes_until_break: nextProps.time,
-            });
-        }
-        if(nextProps.start !== this.state.start) {
-            this.setState({
-                end_time: moment().add(this.state.minutes_until_break, 'm'),
-                start: nextProps.start
-            })
-            this.internal_clock = setInterval(this.tick, 500);
-        }
-
+        this.setState({
+            end_time: moment().add(nextProps.time, 'm'),
+            start: nextProps.start
+        });
     }
 
     onPause() {
         clearInterval(this.internal_clock);
-    }
-
-    start() {
-        this.setState({
-            end_time: moment().add(this.state.minutes_until_break,'m')
-        });
-        this.internal_clock = setInterval(this.tick, 500);
     }
 
     render() {

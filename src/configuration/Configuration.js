@@ -41,6 +41,7 @@ export default class Configuration extends React.Component {
               rebuys_through_level: {type: "number", title: "Rebuy Allowed Until Level", default: 6},
               max_rebuys: {type:"number", title: "Max Rebuys", default: 1},
               addon: {type: "number", title: "Addon Amount", default: 0},
+              locale: {type: "string", title: "Locale", default: "en"},
               blinds: {type: "array", title: "Blind Levels", items: {
                  title : "Level",
                  type: "object", 
