@@ -53,8 +53,12 @@ export default class Configuration extends React.Component {
                   }     
               }},
               places: {type: "array", title: "Places", items:{
-                  title: "percentage",
-                  type: "number"
+                  title: "Place",
+                  type: "object",
+                  properties: {
+                    place: {type: "string", title: "Place"},
+                    percentage: {type: "number", title: "Percentage"}
+                  }
               }}
             }
           };
@@ -105,18 +109,18 @@ export default class Configuration extends React.Component {
     updateRawJson(rawJson) {
 
         var jsonObject = JSON.parse(rawJson);
-        jsonObject.entry_player_count = jsonObject.current_player_count;
-
+        jsonObject.current_player_count = jsonObject.entry_player_count;
+        var newRawJson = JSON.stringify(jsonObject);
         this.setState({
             isPaneOpen: this.state.isPaneOpen,
-            config: JSON.stringify(jsonObject),
+            config: newRawJson,
             configObject: jsonObject
         })
-        ConfigurationActions.configChange(rawJson);
+        ConfigurationActions.configChange(newRawJson);
     }
 
     updateJsonObject(object) {
-        object.entry_player_count = object.current_player_count;
+        object.current_player_count = object.entry_player_count;
 
         const rawJson = JSON.stringify(object);
         this.setState({

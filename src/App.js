@@ -28,6 +28,7 @@ class App extends Reflux.Component {
       entry_player_count: 9,
       current_player_count: 9,
       starting_chips: 20000,
+      blind_time: 15,
       break_time: 5,
       levels_between_break: 3,
       buyin: 10,
@@ -40,9 +41,9 @@ class App extends Reflux.Component {
       timerStarted: false,
       blinds: [{"small_blind":25,"big_blind":50,"ante":10},{"small_blind":50,"big_blind":100,"ante":0},{"small_blind":100,"big_blind":200,"ante":0},{"small_blind":200,"big_blind":300,"ante":0},{"small_blind":300,"big_blind":600,"ante":0}],
       places : [
-        60,
-        30,
-        10
+        { "place": undefined, "percentage" :60 },
+        { "place": "2", "percentage" :30 },
+        { "place": "3-4",  "percentage" :5 }
       ]
     }
 
@@ -140,7 +141,7 @@ class App extends Reflux.Component {
 
     var allowAddOn = addon > 0;
     var allowRebuy = rebuy > 0 || rebuys_through_level >= current_blind_level;
-    var levelTimes = this.calculateLevelTimes(blinds, blind_time, break_time);
+
     return (
       <div>
         {/* Header section */}
@@ -158,9 +159,9 @@ class App extends Reflux.Component {
             </div>
           </div>
         </div>
-        <div className="container-fluid h-100 d-inline-block text-light top-border bottom-border">
-          <div className="row align-items-center side-bar-color text-center">
-            <div className="col-md-2">
+        <div className="container-fluid text-light top-border bottom-border">
+          <div className="row side-bar-color text-center">
+            <div className="col-md-2 flex">
               {/* left section */}
               <div className="row bottom-border">
                 <div className="col-md-12">Round <br/>{current_blind_level + 1}</div>
@@ -191,7 +192,7 @@ class App extends Reflux.Component {
               {/* center section */}
               <div className="row bottom-border">
                 <div className="col-md-12">
-                  <Timer start={timerStarted} restart={restart} levelTimes={levelTimes} currentLevel={current_blind_level} onComplete={me.onNextBlind} />
+                  <Timer start={timerStarted} restart={restart} timeInMinutes={blindOrBreakTime} onComplete={me.onNextBlind} />
                 </div>
               </div>
               <div className="row bottom-border">
@@ -199,7 +200,7 @@ class App extends Reflux.Component {
                   <div className="col-md-12 text-next-blind">BREAK</div>
                 }
                 {!isItBreakTime && 
-                  <div className="col-md-12 text-next-blind">Current Blinds: <br/> {current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
+                  <div className="col-md-12 text-next-blind">Blinds: <br/> {current_blind_info.small_blind} / {current_blind_info.big_blind}<br/>
                 {current_blind_info.ante > 0 && 'Ante: $' + current_blind_info.ante}            
                 </div>
                 }
@@ -213,19 +214,19 @@ class App extends Reflux.Component {
                 }
               </div>
             </div>
-            <div className="col-md-2 side-bar-color text-center align-items-center">
+            <div className="col-md-2 side-bar-color text-center">
               {/* right section */}
               <div className="row bottom-border">
-                <div className="col-md-12"><CurrentTime></CurrentTime></div>
+                <div className="col"><CurrentTime></CurrentTime></div>
               </div>
               <div className="row bottom-border">
-                <div className="col-md-12">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
+                <div className="col">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
               </div>
               <div className="row bottom-border">
-                <div className="col-md-12">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
+                <div className="col">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
               </div>
               <div className="row">
-              <div className="col-md-12"><Places total_pot={total_pot} places={places} /></div>
+              <div className="col"><Places total_pot={total_pot} places={places} /></div>
               </div>
 
           </div>       

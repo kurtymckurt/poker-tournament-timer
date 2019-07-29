@@ -1,12 +1,12 @@
 {
     "name": "Poker Tournament",
-    "current_player_count": 9,
+    "entry_player_count": 5001,
     "starting_chips": 20000,
     "blind_levels": 40,
-    "blind_time": 1,
+    "blind_time": 15,
     "break_time": 5,
     "levels_between_break": 3,
-    "buyin": 10,
+    "buyin": 100,
     "rebuy": 10,
     "max_rebuys": 1,
     "rebuys_through_level": 6,
@@ -46,8 +46,100 @@
         }
     ],
     "places" : [
-        60,
-        30,
-        10
+        {
+            "place": "1",
+            "percentage": 17.5
+        },
+        {
+            "place": "2",
+            "percentage": 10.25
+        },
+        {
+            "place": "3",
+            "percentage": 7.5
+        },
+        {
+            "place": "4",
+            "percentage": 5.2
+        },
+        {
+            "place": "5",
+            "percentage": 4.2
+        },
+        {
+            "place": "6",
+            "percentage": 3.1
+        },
+        {
+            "place": "7",
+            "percentage": 2.1
+        },
+        {
+            "place": "8",
+            "percentage": 1.1
+        },
+        {
+            "place": "9",
+            "percentage": 0.8
+        },
+        {
+            "place": "10-15",
+            "percentage": 0.6
+        },
+        {
+            "place": "16-20",
+            "percentage": 0.45
+        },
+        {
+            "place": "21-25",
+            "percentage": 0.35
+        },
+        {
+            "place": "26-30",
+            "percentage": 0.3
+        },
+        {
+            "place": "31-35",
+            "percentage": 0.25
+        },{
+            "place": "36-40",
+            "percentage": 0.19
+        },{
+            "place": "41-50",
+            "percentage": 0.18
+        },{
+            "place": "51-60",
+            "percentage": 0.16
+        },{
+            "place": "61-75",
+            "percentage": 0.14
+        },{
+            "place": "76-100",
+            "percentage": 0.12
+        },{
+            "place": "101-125",
+            "percentage": 0.11
+        },{
+            "place": "126-150",
+            "percentage": 0.1
+        },{
+            "place": "151-175",
+            "percentage": 0.09
+        },{
+            "place": "176-200",
+            "percentage": 0.08
+        },{
+            "place": "201-275",
+            "percentage": 0.07
+        },{
+            "place": "276-350",
+            "percentage": 0.06
+        },{
+            "place": "351-500",
+            "percentage": 0.05
+        },{
+            "place": "501-550",
+            "percentage": 0.04
+        }
     ]
 }

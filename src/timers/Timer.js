@@ -9,7 +9,7 @@ export default class Timer extends React.Component {
 
         this.state = {
             end_time: moment(),
-            current_minutes: props.levelTimes[props.currentLevel],
+            current_minutes: props.timeInMinutes,
             current_seconds: 0,
             start: false
         }
@@ -19,12 +19,19 @@ export default class Timer extends React.Component {
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
         this.setNextTime = this.setNextTime.bind(this);
+        this.internal_clock = setInterval(this.tick, 500);
     }
 
     tick() {
 
-        if(!this.state.start) {
-            return null;
+        if(!this.state.start || this.state.paused) {
+          
+            if(!this.state.current_minutes) {
+                this.setState({
+                    current_minutes: this.props.timeInMinutes
+                });
+           }
+           return null;
         }
         var dateNow = moment();
         var dateExpected = this.state.end_time;
@@ -46,24 +53,26 @@ export default class Timer extends React.Component {
 
     setNextTime() {
         this.setState({
-            end_time: moment().add(this.props.levelTimes[this.props.currentLevel], 'm'),
-            current_minutes: this.props.levelTimes[this.props.currentLevel]
+            end_time: moment().add(this.props.timeInMinutes, 'm'),
+            current_minutes: this.props.timeInMinutes
         });
     }
 
     componentWillReceiveProps(nextProps) {
         // You don't have to do this check first, but it can help prevent an unneeded render
-        if(nextProps.start !== this.state.start || nextProps.restart) {
-            this.setState({
-                end_time: moment().add(this.nextProps.levelTimes[this.nextProps.currentLevel], 'm'),
-                start: nextProps.start
-            }) 
-            if(nextProps.restart) {
-                ControlActions.resetRestartState();
-            }
-            this.internal_clock = setInterval(this.tick, 500);
-        }
 
+        this.setState({
+            timeInMinutes: nextProps.timeInMinutes,
+            start: nextProps.start
+        });
+        
+        if(nextProps.restart) {
+            this.setState({
+                end_time: moment().add(nextProps.timeInMinutes, 'm'),
+                current_minutes: nextProps.timeInMinutes
+            });
+            ControlActions.resetRestartState();
+        }
     }
 
     onPause() {
@@ -78,9 +87,19 @@ export default class Timer extends React.Component {
     }
 
     render() {
+
+        const {current_minutes, current_seconds, timeInMinutes} = this.state;
+        
+        var minuteTime;
+        if(!current_minutes) {
+            minuteTime = timeInMinutes;
+        } else {
+            minuteTime = current_minutes;
+        }
+
         return (
             <div className="text-clock">
-                    {this.state.current_minutes}:{this.state.current_seconds < 10  && '0' + this.state.current_seconds }{this.state.current_seconds >= 10  && this.state.current_seconds}             
+                    {minuteTime}:{current_seconds < 10  && '0' + current_seconds }{current_seconds >= 10  && current_seconds}             
             </div>
         )
     }
