@@ -42,10 +42,10 @@ export default class ControlStore extends Reflux.Store
         this.trigger(state);
     }
 
-    onStart(timeInMinutes) {
+    onStart() {
         var state = {
             timerStarted: true,
-            end_time: moment().add(timeInMinutes, 'm')
+            base_time: moment()
         }
         this.trigger(state);
     }

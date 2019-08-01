@@ -15,6 +15,7 @@ import Places from './components/Places';
 import Sound from 'react-sound';
 import BuzzerSound from './sounds/blind_buzzer.mp3';
 import ControlActions from './control/ControlActions';
+import moment from 'moment';
 
 
 class App extends Reflux.Component {
@@ -133,11 +134,11 @@ class App extends Reflux.Component {
 
   render() {
   
-    var me = this;
+    const me = this;
     const {buyin, rebuy, addon, 
       current_blind_level, blinds, blind_time, break_time, entry_player_count, current_player_count,
       rebuy_count, rebuys_through_level, max_rebuys, starting_chips, addon_count,
-      timerStarted, places, restart, end_time, locale} = me.state;
+      timerStarted, places, restart, base_time, locale} = me.state;
 
     const chip_count = starting_chips * entry_player_count;
     const avg_chip_count = Math.floor(chip_count / current_player_count);
@@ -148,22 +149,22 @@ class App extends Reflux.Component {
 
     const isNextRoundBreakTime = next_blind_info.break;
 
-    var blindOrBreakTime = isItBreakTime ? break_time : blind_time;
+    const blindOrBreakTime = isItBreakTime ? break_time : blind_time;
 
-    var levels_until_break = this.levelUntilBreak(current_blind_level, blinds);
-    var time_until_break = levels_until_break * blind_time;
+    const levels_until_break = this.levelUntilBreak(current_blind_level, blinds);
+    const time_until_break = levels_until_break * blind_time;
 
-    var allowAddOn = addon > 0;
-    var allowRebuy = rebuy > 0 || rebuys_through_level >= current_blind_level;
+    const allowAddOn = addon > 0;
+    const allowRebuy = rebuy > 0 || rebuys_through_level >= current_blind_level;
 
-    var nextBigBlind = this.getNumberInLocale(next_blind_info.big_blind);
-    var nextSmallBlind = this.getNumberInLocale(next_blind_info.small_blind);
-    var nextAnte = this.getNumberInLocale(next_blind_info.ante);
+    const nextBigBlind = this.getNumberInLocale(next_blind_info.big_blind);
+    const nextSmallBlind = this.getNumberInLocale(next_blind_info.small_blind);
+    const nextAnte = this.getNumberInLocale(next_blind_info.ante);
 
-    var currentBigBlind = this.getNumberInLocale(current_blind_info.big_blind);
-    var currentSmallBlind = this.getNumberInLocale(current_blind_info.small_blind);
-    var currentAnte = this.getNumberInLocale(current_blind_info.ante);
-
+    const currentBigBlind = this.getNumberInLocale(current_blind_info.big_blind);
+    const currentSmallBlind = this.getNumberInLocale(current_blind_info.small_blind);
+    const currentAnte = this.getNumberInLocale(current_blind_info.ante);
+    const end_time = moment(base_time).add(blindOrBreakTime, 'm')
     return (
       <div>
         {/* Header section */}
@@ -242,10 +243,10 @@ class App extends Reflux.Component {
                 <div className="col"><CurrentTime/></div>
               </div>
               <div className="row bottom-border">
-                <div className="col">Elapsed Time <br/> <ElapsedTimer start={timerStarted} /></div>
+                <div className="col">Elapsed Time <br/> <ElapsedTimer base_time={base_time} start={timerStarted} /></div>
               </div>
               <div className="row bottom-border">
-                <div className="col">Next Break <br/><BreakTimer time={time_until_break} start={timerStarted}></BreakTimer></div>
+                <div className="col">Next Break <br/><BreakTimer base_time={base_time} time={time_until_break} start={timerStarted}></BreakTimer></div>
               </div>
               <div className="row">
               <div className="col"><Places total_pot={total_pot} places={places} locale={locale} /></div>
@@ -265,7 +266,6 @@ class App extends Reflux.Component {
           addon_count={addon_count}
           allowRebuy={allowRebuy}
           allowAddOn={allowAddOn}
-          timeInMinutes={blindOrBreakTime}
           />
       </div>
     </div>

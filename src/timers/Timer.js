@@ -16,7 +16,7 @@ export default class Timer extends React.Component {
         this.onComplete = props.onComplete;
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
-        this.internal_clock = setInterval(this.tick, 500);
+        this.internal_clock = setInterval(this.tick, 1000);
     }
 
     tick() {
