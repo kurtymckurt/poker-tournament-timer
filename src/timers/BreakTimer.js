@@ -18,7 +18,7 @@ export default class BreakTimer extends React.Component {
         this.onComplete = props.onComplete;
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
-        this.internal_clock = setInterval(this.tick, 1000);
+        this.internal_clock = setInterval(this.tick, 100);
     }
 
     tick() {
@@ -49,6 +49,10 @@ export default class BreakTimer extends React.Component {
             end_time: moment(nextProps.base_time).add(nextProps.time, 'm'),
             start: nextProps.start
         });
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.internal_clock);
     }
 
     onPause() {

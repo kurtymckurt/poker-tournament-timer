@@ -15,10 +15,9 @@ export default class ElapsedTimer extends Reflux.Component {
             started: false
         }
 
-        this.onComplete = props.onComplete;
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);
-        this.internal_clock = setInterval(this.tick, 500);
+        this.internal_clock = setInterval(this.tick, 100);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -34,21 +33,25 @@ export default class ElapsedTimer extends Reflux.Component {
         }
     }
 
+    componentWillUnmount(){
+        clearInterval(this.internal_clock);
+    }
+
+
     tick() {
         if(!this.state.started) {
             return null
         }
         const dateNow = moment();
         const dateStarted = this.state.start_time;
-        const diff = dateNow.diff(dateStarted, 'seconds');
+        const diff = dateNow.diff(dateStarted, 'seconds') + 1;
 
         const minutes = Math.floor(diff / 60);
         const hours = Math.floor(minutes / 60);
-        const minutesLeft = minutes % 60;
         const seconds = diff % 60;
         this.setState({
             current_hours: hours,
-            current_minutes: minutesLeft,
+            current_minutes: minutes,
             current_seconds: seconds
         });
     }
