@@ -42,6 +42,7 @@ export default class Configuration extends React.Component {
               max_rebuys: {type:"number", title: "Max Rebuys", default: 1},
               addon: {type: "number", title: "Addon Amount", default: 0},
               locale: {type: "string", title: "Locale", default: "en"},
+              currency: {type: "string", title: "Currency", default: "USD"},
               blinds: {type: "array", title: "Blind Levels", items: {
                  title : "Level",
                  type: "object", 
@@ -108,9 +109,9 @@ export default class Configuration extends React.Component {
 
     updateRawJson(rawJson) {
 
-        var jsonObject = JSON.parse(rawJson);
+        let jsonObject = JSON.parse(rawJson);
         jsonObject.current_player_count = jsonObject.entry_player_count;
-        var newRawJson = JSON.stringify(jsonObject);
+        let newRawJson = JSON.stringify(jsonObject);
         this.setState({
             isPaneOpen: this.state.isPaneOpen,
             config: newRawJson,
@@ -136,8 +137,8 @@ export default class Configuration extends React.Component {
     }  
 
     readTextFile (file) {
-        var me = this;
-        var reader = new FileReader()
+        let me = this;
+        let reader = new FileReader()
         reader.onload = function (event) {
             me.updateRawJson(event.target.result);
         }
@@ -157,7 +158,7 @@ export default class Configuration extends React.Component {
     }
 
     render() {
-        var me = this;
+        let me = this;
         return (
             <SlidingPane
             className='some-custom-class'

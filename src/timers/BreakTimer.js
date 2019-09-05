@@ -26,16 +26,16 @@ export default class BreakTimer extends React.Component {
         if(!this.state.start) {
             return null;
         }
-        var dateNow = moment();
-        var dateExpected = this.state.end_time;
-        var diff = dateExpected.diff(dateNow, 'seconds');
+        const dateNow = moment();
+        const dateExpected = this.state.end_time;
+        const diff = dateExpected.diff(dateNow, 'seconds');
 
         if(diff <= 0) {
             this.onPause();
         }
 
-        var minutes = Math.floor(diff / 60);
-        var seconds = diff % 60;
+        const minutes = Math.floor(diff / 60);
+        const seconds = diff % 60;
         this.setState({
             end_time: this.state.end_time,
             current_minutes: minutes,

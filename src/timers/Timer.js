@@ -7,7 +7,6 @@ export default class Timer extends React.Component {
         super(props);
 
         this.state = {
-            end_time: moment(),
             current_minutes: 0,
             current_seconds: 0,
             start: false
@@ -20,11 +19,10 @@ export default class Timer extends React.Component {
     }
 
     tick() {
-
         if(!this.state.start) {
            return null;
         }
-        var diff = this.getTimeDiff();
+        let diff = this.getTimeDiff(this.props.end_time);
 
         if(diff <= 0) {
             this.onComplete();
@@ -33,19 +31,17 @@ export default class Timer extends React.Component {
             })
         }
 
-        var minutes = Math.floor(diff / 60);
-        var seconds = diff % 60;
+        let minutes = Math.floor(diff / 60);
+        let seconds = diff % 60;
         this.setState({
-            end_time: this.state.end_time,
             current_minutes: minutes,
             current_seconds: seconds
         });
     }
 
-    getTimeDiff() {
-        var dateNow = moment();
-        var dateExpected = this.state.end_time === undefined ? moment() : this.state.end_time;
-        var diff = dateExpected.diff(dateNow, 'seconds');
+    getTimeDiff(end_time) {
+        let dateNow = moment();
+        let diff = end_time.diff(dateNow, 'seconds');
         return diff;
     }
 
@@ -53,22 +49,30 @@ export default class Timer extends React.Component {
         clearInterval(this.internal_clock);
     }
 
-    componentWillReceiveProps(nextProps) {
-        //It hasn't started so we can fix the display 
-        const timeDiff = this.getTimeDiff();
+    updateTimer(end_time) {
+        const timeDiff = this.getTimeDiff(end_time) + 1;
         const minutes = Math.floor(timeDiff / 60);
+        const seconds = timeDiff % 60;
         this.setState({
-            end_time: nextProps.end_time,
             current_minutes: minutes,
+            current_seconds: seconds
+        });
+    }
+
+    componentDidMount() {
+        this.updateTimer(this.props.end_time)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        //It hasn't started so we can fix the display
+        this.updateTimer(nextProps.end_time)
+        this.setState({
             start: nextProps.start
         });
     }
 
     render() {
-
         const {current_minutes, current_seconds} = this.state;
-        
-
         return (
             <div className="text-clock">
                      {current_minutes < 10  && '0' + current_minutes }{current_minutes >= 10  && current_minutes}:{current_seconds < 10  && '0' + current_seconds }{current_seconds >= 10  && current_seconds}             

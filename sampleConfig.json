@@ -11,7 +11,8 @@
     "rebuys_through_level": 6,
     "addon": 0,
     "addon_count": 0,
-    "locale": "en",
+    "locale": "de",
+    "currency": "EUR",
     "blinds": [
         {
             "small_blind": 25,
