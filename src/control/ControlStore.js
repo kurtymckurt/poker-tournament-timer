@@ -50,9 +50,30 @@ export default class ControlStore extends Reflux.Store
         this.trigger(state);
     }
 
+    onResume() {
+        const state = {
+            pauseTimer: false
+        };
+        this.trigger(state);
+    }
+
+    onPause() {
+        const state = {
+            pauseTimer: true
+        };
+        this.trigger(state);
+    }
+
     onResetRestartState() {
         const state =  {
             restart: false
+        };
+        this.trigger(state);
+    }
+
+    onChangePlaces(places) {
+        const state = {
+            places: places
         };
         this.trigger(state);
     }

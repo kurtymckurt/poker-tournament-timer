@@ -135,13 +135,23 @@ class App extends Reflux.Component {
     }
   }
 
+  getEffectiveLevel(current_blind_level, blinds) {
+    let level = 1;
+    for(let i = 0; i < current_blind_level; i++) {
+      if(!blinds[i].break) {
+        level += 1;
+      }
+    }
+    return level;
+  }
+
   render() {
   
     const me = this;
     const {buyin, rebuy, addon, 
       current_blind_level, blinds, blind_time, break_time, entry_player_count, current_player_count,
       rebuy_count, rebuys_through_level, max_rebuys, starting_chips, addon_count,
-      timerStarted, places, restart, base_time, locale, currency} = me.state;
+      timerStarted, places, restart, base_time, locale, currency, pauseTimer} = me.state;
 
     const chip_count = starting_chips * entry_player_count;
     const avg_chip_count = Math.floor(chip_count / current_player_count);
@@ -168,6 +178,7 @@ class App extends Reflux.Component {
     const currentSmallBlind = this.getNumberInLocale(current_blind_info.small_blind);
     const currentAnte = this.getNumberInLocale(current_blind_info.ante);
     const end_time = moment(base_time).add(blindOrBreakTime, 'm');
+    const currentLevel = this.getEffectiveLevel(current_blind_level, blinds);
 
     return (
       <div>
@@ -191,7 +202,7 @@ class App extends Reflux.Component {
             <div className="col-md-2 flex">
               {/* left section */}
               <div className="row bottom-border">
-                <div className="col-md-12">Round <br/>{current_blind_level + 1}</div>
+                <div className="col-md-12">Round <br/>{currentLevel}</div>
               </div>
               <div className="row bottom-border">
                 <div className="col-md-12">Entries <br/>{this.getNumberInLocale(entry_player_count) }</div>
@@ -219,7 +230,7 @@ class App extends Reflux.Component {
               {/* center section */}
               <div className="row bottom-border">
                 <div className="col-md-12">
-                  <Timer start={timerStarted} restart={restart} end_time={end_time} onComplete={me.onNextBlind} />
+                  <Timer start={timerStarted} restart={restart} pause={pauseTimer} end_time={end_time} onComplete={me.onNextBlind} />
                 </div>
               </div>
               <div className="row bottom-border">
@@ -266,10 +277,12 @@ class App extends Reflux.Component {
           current_player_count={current_player_count}
           entry_player_count={entry_player_count}
           started={timerStarted}
+          paused={pauseTimer}
           rebuy_count={rebuy_count}
           addon_count={addon_count}
           allowRebuy={allowRebuy}
           allowAddOn={allowAddOn}
+          places={places}
           />
       </div>
     </div>

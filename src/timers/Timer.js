@@ -22,7 +22,14 @@ export default class Timer extends React.Component {
         if(!this.state.start) {
            return null;
         }
-        const diff = this.getTimeDiff(this.props.end_time);
+        const diff = this.getTimeDiff(this.state.end_time);
+
+        if(this.state.pause) {
+            this.setState({
+                end_time: this.state.end_time.add(diff, 'seconds')
+            });
+            return null;
+        }
 
         if(diff <= 0) {
             this.onComplete();
@@ -55,7 +62,8 @@ export default class Timer extends React.Component {
         const seconds = timeDiff % 60;
         this.setState({
             current_minutes: minutes,
-            current_seconds: seconds
+            current_seconds: seconds,
+            end_time: end_time
         });
     }
 
@@ -65,9 +73,16 @@ export default class Timer extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         //It hasn't started so we can fix the display
-        this.updateTimer(nextProps.end_time)
+        if(!nextProps.pause) {
+            this.updateTimer(nextProps.end_time);
+        }else {
+            this.setState({
+                end_time: nextProps.end_time
+            });
+        }
         this.setState({
-            start: nextProps.start
+            start: nextProps.start,
+            pause: nextProps.pause
         });
     }
 

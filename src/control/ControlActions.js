@@ -1,7 +1,7 @@
 const Reflux = require('reflux');
 
 const ControlActions = Reflux.createActions([
-    "addPlayer", "removePlayer", "rebuyPlayer", "start", "addAddOn", "resetRestartState"
+    "addPlayer", "removePlayer", "rebuyPlayer", "start", "pause", "resume", "addAddOn", "resetRestartState", "changePlaces"
 ]);
 
 
