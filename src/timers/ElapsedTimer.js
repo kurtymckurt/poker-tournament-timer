@@ -13,7 +13,7 @@ export default class ElapsedTimer extends Reflux.Component {
             current_minutes: 0,
             current_seconds: 0,
             started: false
-        }
+        };
 
         this.onPause = this.onPause.bind(this);
         this.tick = this.tick.bind(this);

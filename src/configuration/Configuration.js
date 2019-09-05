@@ -109,14 +109,14 @@ export default class Configuration extends React.Component {
 
     updateRawJson(rawJson) {
 
-        let jsonObject = JSON.parse(rawJson);
+        const jsonObject = JSON.parse(rawJson);
         jsonObject.current_player_count = jsonObject.entry_player_count;
-        let newRawJson = JSON.stringify(jsonObject);
+        const newRawJson = JSON.stringify(jsonObject);
         this.setState({
             isPaneOpen: this.state.isPaneOpen,
             config: newRawJson,
             configObject: jsonObject
-        })
+        });
         ConfigurationActions.configChange(newRawJson);
     }
 
@@ -137,11 +137,11 @@ export default class Configuration extends React.Component {
     }  
 
     readTextFile (file) {
-        let me = this;
-        let reader = new FileReader()
+        const me = this;
+        const reader = new FileReader();
         reader.onload = function (event) {
             me.updateRawJson(event.target.result);
-        }
+        };
         reader.readAsText(file);
     }
 
@@ -158,7 +158,7 @@ export default class Configuration extends React.Component {
     }
 
     render() {
-        let me = this;
+        const me = this;
         return (
             <SlidingPane
             className='some-custom-class'

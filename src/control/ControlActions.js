@@ -1,6 +1,6 @@
-var Reflux = require('reflux');
+const Reflux = require('reflux');
 
-var ControlActions = Reflux.createActions([
+const ControlActions = Reflux.createActions([
     "addPlayer", "removePlayer", "rebuyPlayer", "start", "addAddOn", "resetRestartState"
 ]);
 

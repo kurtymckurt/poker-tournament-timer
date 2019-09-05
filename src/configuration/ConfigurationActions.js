@@ -1,6 +1,6 @@
-var Reflux = require('reflux');
+const Reflux = require('reflux');
 
-var ConfigurationActions = Reflux.createActions([
+const ConfigurationActions = Reflux.createActions([
     "configChange"
 ]);
 

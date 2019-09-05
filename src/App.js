@@ -105,15 +105,6 @@ class App extends Reflux.Component {
     ControlActions.start(blindOrBreakTime)
   }
 
-  calculateLevelTimes(blinds, blind_time, break_time) {
-    let levelTimes = [];
-    for(let i = 0; i < blinds.length; i++) {
-      let length = blinds[i].break ? break_time : blind_time;
-      levelTimes.push( length );
-    }
-    return levelTimes;
-  }
-
   levelUntilBreak(current_blind_level, blinds) {
     let count = 1;
     if(current_blind_level + 1 < blinds.length) {
@@ -136,7 +127,11 @@ class App extends Reflux.Component {
     if(currency === undefined || !isCurrency) {
       return number.toLocaleString(locale);
     } else {
-      return number.toLocaleString(locale, {style: 'currency', currency: currency})
+      return number.toLocaleString(locale, {
+          style: 'currency',
+          currency: currency,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0})
     }
   }
 
@@ -172,7 +167,8 @@ class App extends Reflux.Component {
     const currentBigBlind = this.getNumberInLocale(current_blind_info.big_blind);
     const currentSmallBlind = this.getNumberInLocale(current_blind_info.small_blind);
     const currentAnte = this.getNumberInLocale(current_blind_info.ante);
-    const end_time = moment(base_time).add(blindOrBreakTime, 'm')
+    const end_time = moment(base_time).add(blindOrBreakTime, 'm');
+
     return (
       <div>
         {/* Header section */}

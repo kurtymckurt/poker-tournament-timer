@@ -11,7 +11,7 @@ export default class ConfigurationStore extends Reflux.Store
 
     onConfigChange(config)
     {
-        var jsonConfig = JSON.parse(config);
+        const jsonConfig = JSON.parse(config);
         this.trigger(jsonConfig);
     }
 }

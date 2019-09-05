@@ -64,11 +64,11 @@ export default class Control extends React.Component {
     }
 
     render() {
-        var me = this;
+        const me = this;
         const {current_player_count, entry_player_count, rebuy_count, started, addon_count, allowRebuy,
             allowAddOn} = me.props;
 
-        var startOrPause = !started ? (<button onClick={this.startOrPauseGame}>Start Tournament</button>)
+        const startOrPause = !started ? (<button onClick={this.startOrPauseGame}>Start Tournament</button>)
             : (<button onClick={this.startOrPauseGame}>Pause Tournament</button>)
 
         return (

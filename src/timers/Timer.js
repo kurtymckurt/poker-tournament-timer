@@ -10,7 +10,7 @@ export default class Timer extends React.Component {
             current_minutes: 0,
             current_seconds: 0,
             start: false
-        }
+        };
         
         this.onComplete = props.onComplete;
         this.onPause = this.onPause.bind(this);
@@ -22,7 +22,7 @@ export default class Timer extends React.Component {
         if(!this.state.start) {
            return null;
         }
-        let diff = this.getTimeDiff(this.props.end_time);
+        const diff = this.getTimeDiff(this.props.end_time);
 
         if(diff <= 0) {
             this.onComplete();
@@ -31,8 +31,8 @@ export default class Timer extends React.Component {
             })
         }
 
-        let minutes = Math.floor(diff / 60);
-        let seconds = diff % 60;
+        const minutes = Math.floor(diff / 60);
+        const seconds = diff % 60;
         this.setState({
             current_minutes: minutes,
             current_seconds: seconds

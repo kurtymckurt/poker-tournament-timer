@@ -36,7 +36,14 @@ export default class Places extends React.Component {
                 calculated_places.push(Math.floor(((places[i].percentage * .01) * total_pot)));
             }
             listItems = calculated_places.map((number, index) =>
-                <div key={index}> {me.getPlaceString(places[index].place, index) + ': ' + number.toLocaleString(this.props.locale, {style: 'currency', currency: this.props.currency})} </div>
+                <div key={index}> {me.getPlaceString(places[index].place, index) + ': ' +
+                number.toLocaleString(
+                    this.props.locale,
+                    {style: 'currency',
+                        currency: this.props.currency,
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    })} </div>
             );
         }
        
